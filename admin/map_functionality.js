@@ -6,7 +6,7 @@ var map = L.map('map').setView([37.9838, 23.7275], 13); // Centered on Athens, G
         ////////////////////////////////////
 
         var myIcon = L.icon({   //icon image
-        iconUrl: 'testicon.png',
+        iconUrl: 'images/testicon.png',
         iconSize: [40,40]
         })
 

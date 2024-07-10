@@ -33,6 +33,9 @@
         .button.green {
             background-color: #66d266;
         }
+        .button.exit {
+            background-color: aqua;
+        }
         .map-container {
             flex-grow: 1;
         }
@@ -72,6 +75,10 @@
             <input type="checkbox" id="offers" class="filter-checkbox" checked>
             <label for="offers" class="button">Offers</label>
         </div>
+        <div>
+            <input type="checkbox" id="exit" class="filter-checkbox" checked hidden> <!-- Hide the checkbox -->
+            <label for="exit-button" class="button exit" onclick="location.href='admin_main_page.html'">Exit</label> <!-- Aqua button for exiting -->
+        </div>        
     </div>
     <div class="map-container">
         <div id="map"></div>
