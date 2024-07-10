@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body {
+            background-color: #d2a07e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .button {
+            display: block;
+            width: 200px;
+            padding: 15px;
+            margin: 10px auto;
+            border: none;
+            background-color: #f44336;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button.green {
+            background-color: lightgreen;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .form-container {
+            width: 410px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 90%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>What item are you adding?</h2>
+            <form action="add_item_page.html" method="post">
+                <div class="form-group">
+                    <label for="name">Item Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Item Quantity:</label>
+                    <input type="number" id="quantity" name="quantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="type">Item Type:</label>
+                    <select id="type" name="type" required>
+                        <option value="">Select items type</option>
+                        <option value="food">Food</option>
+                        <option value="drink">Drink</option>
+                        <option value="tools">Tools</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="container" style="display: flex; justify-content: center; gap: 10px;">
+        
+            <a href="vehicle_storage_page.html" class="button">Cancel</a>
+        
+            <a href="vehicle_storage_page.html" class="button green">Add</a>
+
+        </div>
+    </div>
+</body>
+</html>
