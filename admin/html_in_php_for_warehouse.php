@@ -21,8 +21,6 @@
         <input type="submit" value="Add Product">
     </form>
     
-    
-
     <?php
     $host = "localhost";
     $dbname = "WEB2";
@@ -35,7 +33,7 @@
         die("Connection error: " . mysqli_connect_error());
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["productName"])) {
         $productName = $_POST["productName"];
         $productCategory = $_POST["productCategory"];
         $productQuantity = filter_input(INPUT_POST, "productQuantity", FILTER_VALIDATE_INT);
@@ -55,7 +53,24 @@
         echo "Record Saved<br><br>";
     }
 
-    // Fetch and display the records from the warehouse table
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["deleteId"])) {
+        $deleteId = $_POST["deleteId"];
+
+        $sql = "DELETE FROM warehouse WHERE productId = ?";
+
+        $stmt = mysqli_stmt_init($conn);
+
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            die(mysqli_error($conn));
+        }
+
+        mysqli_stmt_bind_param($stmt, "i", $deleteId);
+
+        mysqli_stmt_execute($stmt);
+
+        echo "Record Deleted<br><br>";
+    }
+
     $result = mysqli_query($conn, "SELECT * FROM warehouse");
 
     if ($result->num_rows > 0) {
@@ -65,6 +80,7 @@
                     <th>Product Name</th>
                     <th>Product Category</th>
                     <th>Product Quantity</th>
+                    <th>Actions</th>
                 </tr>";
         while ($row = $result->fetch_assoc()) {
             echo "<tr>
@@ -72,13 +88,18 @@
                     <td>{$row['productName']}</td>
                     <td>{$row['productCategory']}</td>
                     <td>{$row['productQuantity']}</td>
+                    <td>
+                        <form method='POST' action=''>
+                            <input type='hidden' name='deleteId' value='{$row['productId']}'>
+                            <input type='submit' value='Delete'>
+                        </form>
+                    </td>
                   </tr>";
         }
         echo "</table>";
     } else {
         echo "No records found.";
     }
-
     mysqli_close($conn);
     ?>
     <br>
