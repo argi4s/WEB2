@@ -8,17 +8,17 @@
 </head>
 <body>
     <h1>Warehouse Management</h1>
-    <form id="productForm" method="POST" action="">
-        <label for="productName">Product Name</label>
-        <input type="text" id="productName" name="productName" required><br><br>
+    <form id="itemForm" method="POST" action="">
+        <label for="itemName">Item Name</label>
+        <input type="text" id="itemName" name="itemName" required><br><br>
     
-        <label for="productCategory">Product Category</label>
-        <input type="text" id="productCategory" name="productCategory" required><br><br>
+        <label for="itemCategory">Item Category</label>
+        <input type="text" id="itemCategory" name="itemCategory" required><br><br>
         
-        <label for="productQuantity">Product Quantity</label>
-        <input type="number" id="productQuantity" name="productQuantity" required><br><br>
+        <label for="itemQuantity">Item Quantity</label>
+        <input type="number" id="itemQuantity" name="itemQuantity" required><br><br>
         
-        <input type="submit" value="Add Product">
+        <input type="submit" value="Add item">
     </form>
     
     <?php
@@ -33,12 +33,12 @@
         die("Connection error: " . mysqli_connect_error());
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["productName"])) {
-        $productName = $_POST["productName"];
-        $productCategory = $_POST["productCategory"];
-        $productQuantity = filter_input(INPUT_POST, "productQuantity", FILTER_VALIDATE_INT);
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["itemName"])) {
+        $itemName = $_POST["itemName"];
+        $itemCategory = $_POST["itemCategory"];
+        $itemQuantity = filter_input(INPUT_POST, "itemQuantity", FILTER_VALIDATE_INT);
 
-        $sql = "INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO warehouse (itemName, itemCategory, itemQuantity) VALUES (?, ?, ?)";
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -46,17 +46,17 @@
             die(mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "ssi", $productName, $productCategory, $productQuantity);
+        mysqli_stmt_bind_param($stmt, "ssi", $itemName, $itemCategory, $itemQuantity);
 
         mysqli_stmt_execute($stmt);
 
-        echo "Record Saved<br><br>";
+        echo "Item Saved<br><br>";
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["deleteId"])) {
         $deleteId = $_POST["deleteId"];
 
-        $sql = "DELETE FROM warehouse WHERE productId = ?";
+        $sql = "DELETE FROM warehouse WHERE itemId = ?";
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -76,21 +76,21 @@
     if ($result->num_rows > 0) {
         echo "<table border='1'>
                 <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Product Category</th>
-                    <th>Product Quantity</th>
+                    <th>Item ID</th>
+                    <th>Item Name</th>
+                    <th>Item Category</th>
+                    <th>Item Quantity</th>
                     <th>Actions</th>
                 </tr>";
         while ($row = $result->fetch_assoc()) {
             echo "<tr>
-                    <td>{$row['productId']}</td>
-                    <td>{$row['productName']}</td>
-                    <td>{$row['productCategory']}</td>
-                    <td>{$row['productQuantity']}</td>
+                    <td>{$row['itemId']}</td>
+                    <td>{$row['itemName']}</td>
+                    <td>{$row['itemCategory']}</td>
+                    <td>{$row['itemQuantity']}</td>
                     <td>
                         <form method='POST' action=''>
-                            <input type='hidden' name='deleteId' value='{$row['productId']}'>
+                            <input type='hidden' name='deleteId' value='{$row['itemId']}'>
                             <input type='submit' value='Delete'>
                         </form>
                     </td>
@@ -98,7 +98,7 @@
         }
         echo "</table>";
     } else {
-        echo "No records found.";
+        echo "No items found.";
     }
     mysqli_close($conn);
     ?>
