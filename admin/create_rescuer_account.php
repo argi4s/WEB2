@@ -15,10 +15,13 @@
         <label for="rescuerSurname">Rescuer Surname</label>
         <input type="text" id="rescuerSurname" name="rescuerSurname" required><br><br>
         
-        <label for="rescuerUsername">Rescuer Password</label>
-        <input type="number" id="rescuerUsername" name="rescuerUsername" required><br><br>
+        <label for="rescuerUsername">Rescuer Username</label>
+        <input type="text" id="rescuerUsername" name="rescuerUsername" required><br><br>
+
+        <label for="rescuerPassword">Rescuer Password</label>
+        <input type="text" id="rescuerPassword" name="rescuerPassword" required><br><br>
         
-        <input type="submit" value="Add Product">
+        <input type="submit" value="Create Account">
     </form>
     
     <?php
@@ -33,12 +36,13 @@
         die("Connection error: " . mysqli_connect_error());
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["productName"])) {
-        $productName = $_POST["productName"];
-        $productCategory = $_POST["productCategory"];
-        $productQuantity = filter_input(INPUT_POST, "productQuantity", FILTER_VALIDATE_INT);
-
-        $sql = "INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES (?, ?, ?)";
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["rescuerName"])) {
+        $rescuerName = $_POST["rescuerName"];
+        $rescuerSurname = $_POST["rescuerSurname"];
+        $rescuerUsername = $_POST["rescuerUsername"];
+        $rescuerPassword = $_POST["rescuerPassword"];
+        
+        $sql = "INSERT INTO rescuer_account (rescuerName, rescuerSurname, rescuerUsername, rescuerPassword) VALUES (?, ?, ?, ?)";
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -46,17 +50,17 @@
             die(mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "ssi", $productName, $productCategory, $productQuantity);
+        mysqli_stmt_bind_param($stmt, "ssss", $rescuerName, $rescuerSurname, $rescuerUsername, $rescuerPassword);
 
         mysqli_stmt_execute($stmt);
 
-        echo "Record Saved<br><br>";
+        echo "Rescuer Saved<br><br>";
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["deleteId"])) {
         $deleteId = $_POST["deleteId"];
 
-        $sql = "DELETE FROM warehouse WHERE productId = ?";
+        $sql = "DELETE FROM rescuer_account WHERE rescuerId = ?";
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -68,29 +72,31 @@
 
         mysqli_stmt_execute($stmt);
 
-        echo "Record Deleted<br><br>";
+        echo "Rescuer Deleted<br><br>";
     }
 
-    $result = mysqli_query($conn, "SELECT * FROM warehouse");
+    $result = mysqli_query($conn, "SELECT * FROM rescuer_account");
 
     if ($result->num_rows > 0) {
         echo "<table border='1'>
                 <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Product Category</th>
-                    <th>Product Quantity</th>
+                    <th>Rescuer ID</th>
+                    <th>Rescuer Name</th>
+                    <th>Rescuer Surname</th>
+                    <th>Rescuer Username</th>
+                    <th>Rescuer Password</th>
                     <th>Actions</th>
                 </tr>";
         while ($row = $result->fetch_assoc()) {
             echo "<tr>
-                    <td>{$row['productId']}</td>
-                    <td>{$row['productName']}</td>
-                    <td>{$row['productCategory']}</td>
-                    <td>{$row['productQuantity']}</td>
+                    <td>{$row['rescuerId']}</td>
+                    <td>{$row['rescuerName']}</td>
+                    <td>{$row['rescuerSurname']}</td>
+                    <td>{$row['rescuerUsername']}</td>
+                    <td>{$row['rescuerPassword']}</td>
                     <td>
                         <form method='POST' action=''>
-                            <input type='hidden' name='deleteId' value='{$row['productId']}'>
+                            <input type='hidden' name='deleteId' value='{$row['rescuerId']}'>
                             <input type='submit' value='Delete'>
                         </form>
                     </td>
@@ -98,7 +104,7 @@
         }
         echo "</table>";
     } else {
-        echo "No records found.";
+        echo "No rescuers found.";
     }
     mysqli_close($conn);
     ?>
