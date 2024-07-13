@@ -43,13 +43,13 @@ var markers = { // Marker categories
         L.marker([37.9898, 23.7375], { icon: carOffDutyIcon })
     ],
     pendingRequests: [ // pending requests
-        L.marker([37.9838, 23.7475])
+        L.marker([37.9038, 23.7475])
     ],
     completedRequests: [ // completed requests
         L.marker([37.9898, 23.7475])
     ],
     offers: [ // offers from citizens
-        L.marker([37.9858, 23.7355])
+        L.marker([37.9118, 23.7355])
     ]
 };
 
