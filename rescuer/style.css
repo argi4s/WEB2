@@ -1,0 +1,181 @@
+* {
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+body {
+    background-color: #d2a07e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.container {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+.button {
+    display: block;
+    width: 200px;
+    padding: 15px;
+    margin: 10px auto;
+    border: none;
+    background-color: #f44336;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.button.yellow {
+    background-color: #d2c966;
+}
+.button.back{
+    background-color: orange;
+}
+.button.logout{
+    background-color: orange;
+}
+.button.green {
+    background-color: lightgreen;
+}
+.button.smallgreen{
+    width: 50%;
+    padding: 5%;
+    margin: 3%;
+    font-size: 10px;
+    background-color: greenyellow;
+}
+.button.smallred{
+    width: 50%;
+    padding: 5%;
+    margin: 3%;
+    font-size: 10px;
+    background-color: lightcoral;
+}
+.map-container {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box; /* Ensure padding is included in the total width */
+}
+#map {
+    width: 100%;
+    height: calc(100vh-50px);
+    border-radius: 10px; 
+    margin: 1%; 
+    box-sizing: border-box; /* Ensure padding is included in the total width */
+}
+.scroll-container {
+    width: 300px;
+    height: 35%;
+    border: 1px solid #ccc;
+    overflow-y: scroll; /* Adds vertical scrollbar */
+    box-sizing: border-box;
+    justify-content: start;
+    align-items: start;
+}
+.tasktainer {
+    width: auto;
+    min-height: 50px;
+    margin: 10px;
+    justify-content: start;
+    align-items: center;
+    background-color: #ccc;
+    border-radius: 5px;
+}
+.tasktainer.request {
+    background-color: violet;
+}
+.tasktainer.offer {
+    background-color: lightskyblue;
+}
+.form-container {
+    width: 410px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+.form-group input, .form-group select, .form-group textarea {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.form-group textarea {
+    resize: vertical;
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.itemlist {
+    background-color: orange;
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 0 auto;
+    align-items: start;
+}
+.list-item {
+    background-color: #d2a07e;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+.list-item:hover {
+    background-color: orange;
+    cursor: pointer;
+}
+.text_container {
+    width: 80%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.text {
+    padding-left: 10px;
+    padding-top: 5px;
+    width: 100%; /* Full width of the parent */
+    text-align: left; /* Align text to the left */
+}
+.text p {
+    margin: 0; /* Remove default margin */
+    line-height: 1.7; /* Adjust line height for readability */
+}
+.text .bold-text {
+    font-weight: bold;
+    font-size: 14px;
+}
+.text .subtext {
+    font-size: 10px;
+}
+.filter-btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: lightcoral;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+}
+.filter-btn.active {
+    background-color: greenyellow;
+    color: white;
+}
