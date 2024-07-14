@@ -166,14 +166,14 @@ body {
     font-size: 10px;
 }
 .filter-btn {
-    margin-right: 10px;
-    margin-bottom: 10px;
-    padding: 5px 10px;
+    width: 120px;
+    padding: 5px;
     cursor: pointer;
     background-color: lightcoral;
     border: 1px solid #ccc;
     border-radius: 3px;
     font-size: 14px;
+    margin-top: 7px;
 }
 .filter-btn.active {
     background-color: greenyellow;

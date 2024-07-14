@@ -14,7 +14,7 @@
         
             <h1>My Tasks</h1>
 
-            <div class="scroll-container">
+            <div class="scroll-container" style="height: 50%;">
                 <div class="tasktainer offer">
                     <div class="text">
                         <p class="bold-text">4 τούβλα κοκόρι</p>
@@ -50,8 +50,15 @@
                 </div>
                 <div class="tasktainer"></div>
             </div>
+            
+            <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: 70px">
+                <button class="filter-btn active" id="filter1" onclick="applyFilter('filter1')">Rescuers</button>
+                <button class="filter-btn active" id="filter2" onclick="applyFilter('filter2')">Requests</button>
+                <button class="filter-btn active" id="filter3" onclick="applyFilter('filter3')">Offers</button>
+                <button class="filter-btn active" id="filter4" onclick="applyFilter('filter4')">My Tasks</button>
+            </div>
 
-            <a href="rescuer_main_page.html" class="button back">Back to Main Page</a>
+            <a href="rescuer_main_page.html" class="button back" style="margin-top: 30px;">Back to Main Page</a>
  
         </div>
         <div class="map-container">
