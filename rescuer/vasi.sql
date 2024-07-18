@@ -30,10 +30,10 @@ CREATE TABLE citizens (
 )engine=InnoDB;
 ---- Sto warehouse giati sumfwna me ekfwnhsh o admin mporei na kanei drag and drop to marker tou warehouse kai na allaksei thn topothesia etsi------
 CREATE TABLE warehouse (
-    productId INT AUTO_INCREMENT PRIMARY KEY,
+	productId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     productName VARCHAR(25) NOT NULL,
     productCategory ENUM('FOOD', 'DRINK', 'TOOL', 'OTHER') NOT NULL,
-    productQuantity INT NOT NULL,
+    productQuantity INT NOT NULL
 )engine=InnoDB;
 ----PROTEINW metonomasia se sketo vehicles kai prosthhkh pediwn: lat, long, isws kai enos boolean onDuty pediou gia na kanw etsi diaforopoihsh twn marker----
 CREATE TABLE onvehicles (
@@ -53,8 +53,8 @@ CREATE TABLE announcements (
 ---- 
 CREATE TABLE requests (
     requestId INT AUTO_INCREMENT PRIMARY KEY,
-    username INT NOT NULL,
-    productId INT NOT NULL,
+    username VARCHAR(25) NOT NULL,
+    productId INT UNSIGNED NOT NULL,
     quantity INT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
@@ -64,8 +64,8 @@ CREATE TABLE requests (
 
 CREATE TABLE offers (
     offerId INT AUTO_INCREMENT PRIMARY KEY,
-    username INT NOT NULL,
-    productId INT NOT NULL,
+    username VARCHAR(25) NOT NULL,
+    productId INT UNSIGNED NOT NULL,
     quantity INT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
@@ -77,7 +77,7 @@ CREATE TABLE rescuer_tasks (
     rescuerUsername VARCHAR(25) NOT NULL,
     taskType ENUM('request', 'offer') NOT NULL,
     taskIdRef INT NOT NULL,
-    FOREIGN KEY (rescuerId) REFERENCES users(userId),
+    FOREIGN KEY (rescuerUsername) REFERENCES users(username),
     FOREIGN KEY (taskIdRef) REFERENCES requests(requestId) ON DELETE CASCADE,
     FOREIGN KEY (taskIdRef) REFERENCES offers(offerId) ON DELETE CASCADE
 )engine=InnoDB;
