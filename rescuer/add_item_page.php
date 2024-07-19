@@ -14,21 +14,13 @@
             <form action="add_item_page.html" method="post">
                 <div class="form-group">
                     <label for="name">Item Name:</label>
-                    <input type="text" id="name" name="name" required>
+                        <select id="name" name="name" required>
+                            <?php include 'fetch_products.php'; ?>
+                        </select> 
                 </div>
                 <div class="form-group">
                     <label for="quantity">Item Quantity:</label>
                     <input type="number" id="quantity" name="quantity" required>
-                </div>
-                <div class="form-group">
-                    <label for="type">Item Type:</label>
-                    <select id="type" name="type" required>
-                        <option value="">Select items type</option>
-                        <option value="food">Food</option>
-                        <option value="drink">Drink</option>
-                        <option value="tools">Tools</option>
-                        <option value="other">Other</option>
-                    </select>
                 </div>
             </form>
         </div>

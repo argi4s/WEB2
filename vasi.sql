@@ -13,7 +13,7 @@ CREATE TABLE rescuers (
     username VARCHAR(25) PRIMARY KEY,
     name VARCHAR (25) NOT NULL,
     surname VARCHAR(25) NOT NULL,
-    phone INT(10) NOT NULL,
+    phone VARCHAR(10) NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username)
     ON DELETE CASCADE ON UPDATE CASCADE
 )engine=InnoDB;
@@ -22,7 +22,7 @@ CREATE TABLE citizens (
     username VARCHAR(25) PRIMARY KEY,
     name VARCHAR(25) NOT NULL,
     surname VARCHAR(25) NOT NULL,
-    phone INT(10) NOT NULL,
+    phone VARCHAR(10) NOT NULL,
     latitude DECIMAL(9,6),
     longitude DECIMAL(9,6),
     FOREIGN KEY (username) REFERENCES users(username)
@@ -81,3 +81,43 @@ CREATE TABLE rescuer_tasks (
     FOREIGN KEY (taskIdRef) REFERENCES requests(requestId) ON DELETE CASCADE,
     FOREIGN KEY (taskIdRef) REFERENCES offers(offerId) ON DELETE CASCADE
 )engine=InnoDB;
+
+INSERT INTO users (username, password, is_admin) VALUES
+('user1', 'pass1', TRUE),
+('user2', 'pass2', FALSE),
+('user3', 'pass3', FALSE),
+('user4', 'pass4', FALSE);
+
+INSERT INTO rescuers (username, name, surname, phone) VALUES
+('user2', 'John', 'Doe', '1234567890');
+
+INSERT INTO citizens (username, name, surname, phone, latitude, longitude) VALUES
+('user3', 'Jane', 'Smith', '0987654321', 40.712776, -74.005974),
+('user4', 'Alice', 'Johnson', '1122334455', 34.052235, -118.243683);
+
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
+('Water Bottle', 'DRINK', 100),
+('Canned Beans', 'FOOD', 200),
+('Flashlight', 'TOOL', 50),
+('Blanket', 'OTHER', 75),
+('First Aid Kit', 'TOOL', 30);
+
+INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
+('Water Bottle', 10, 'user2'),
+('First Aid Kit', 5, 'user2');
+
+INSERT INTO announcements (announcementTitle, announcementText) VALUES
+('Emergency Alert', 'There is a severe weather warning in your area.'),
+('Food Distribution', 'Free food distribution will take place at the community center.');
+
+INSERT INTO requests (username, productId, quantity, status) VALUES
+('user3', 1, 2, 'pending'),
+('user4', 2, 5, 'pending');
+
+INSERT INTO offers (username, productId, quantity, status) VALUES
+('user3', 3, 1, 'pending'),
+('user4', 4, 2, 'pending');
+
+INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES
+('user2', 'request', 1),
+('user2', 'offer', 1);
