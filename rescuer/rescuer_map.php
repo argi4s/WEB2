@@ -51,7 +51,7 @@
                 <div class="tasktainer"></div>
             </div>
             
-            <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: 70px">
+            <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: 40px">
                 <button class="filter-btn active" id="filter1" onclick="applyFilter('filter1')">Rescuers</button>
                 <button class="filter-btn active" id="filter2" onclick="applyFilter('filter2')">Requests</button>
                 <button class="filter-btn active" id="filter3" onclick="applyFilter('filter3')">Offers</button>
@@ -69,36 +69,7 @@
             <h1>Available Requests</h1>
 
             <div class="scroll-container">
-                <div class="tasktainer request">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallgreen">Take On</a>
-                    </div>
-                </div>
-                <div class="tasktainer request">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallgreen">Take On</a>
-                    </div>
-                </div>
-                <div class="tasktainer request">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallgreen">Take On</a>
-                    </div>
-                </div>
+                <?php include 'fetch_requests.php'; ?>
             </div>
 
             <h1>Available Offers</h1>
