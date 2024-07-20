@@ -9,7 +9,6 @@ var redIcon = L.icon({
     iconSize: [40, 40]
 });
 
-// Fetch coordinates from the PHP script
 fetch('getWarehouseCoordinates.php')
     .then(response => response.json())
     .then(data => {
@@ -28,7 +27,42 @@ fetch('getWarehouseCoordinates.php')
             warehouseMarker.openPopup();
         }
 
+        // Save initial position
+        var initialPosition = warehouseMarker.getLatLng();
+
         // Add event listener for 'dragend' event to update the popup content
-        warehouseMarker.on('dragend', updatePopup);
+        warehouseMarker.on('dragend', function(e) {
+            var newPosition = e.target.getLatLng();
+            var confirmMove = confirm("Do you want to move the marker to the new location?");
+            if (confirmMove) {
+                // Send updated coordinates to the server
+                fetch('updateWarehouseCoordinates.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'latitude=' + newPosition.lat + '&longitude=' + newPosition.lng
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === "success") {
+                        updatePopup(); // Update popup with new position
+                        initialPosition = newPosition; // Update initial position to the new confirmed position
+                    } else {
+                        alert(result.message);
+                        warehouseMarker.setLatLng(initialPosition); // Revert to the initial position if update fails
+                        updatePopup(); // Update popup with the reverted position
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating coordinates:', error);
+                    warehouseMarker.setLatLng(initialPosition); // Revert to the initial position on error
+                    updatePopup(); // Update popup with the reverted position
+                });
+            } else {
+                warehouseMarker.setLatLng(initialPosition); // Revert to the initial position
+                updatePopup(); // Update popup with the reverted position
+            }
+        });
     })
     .catch(error => console.error('Error fetching coordinates:', error));
