@@ -75,36 +75,7 @@
             <h1>Available Offers</h1>
 
             <div class="scroll-container">
-                <div class="tasktainer offer">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallgreen">Take On</a>
-                    </div>
-                </div>
-                <div class="tasktainer offer">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallgreen">Take On</a>
-                    </div>
-                </div>
-                <div class="tasktainer offer">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallgreen">Take On</a>
-                    </div>
-                </div>
+                <?php include 'fetch_offers.php'; ?>
             </div>
 
         </div>
