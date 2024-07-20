@@ -179,3 +179,14 @@ body {
     background-color: greenyellow;
     color: white;
 }
+.text-button {
+    background: none;
+    border: none;
+    color: lightskyblue;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1em;
+}
+.text-button:hover {
+    color: blue;
+}
