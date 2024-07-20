@@ -9,7 +9,7 @@ var redIcon = L.icon({
     iconSize: [40, 40]
 });
 
-fetch('getWarehouseCoordinates.php')
+fetch('warehouse_get_coordinates.php')
     .then(response => response.json())
     .then(data => {
         var latitude = data.latitude;
@@ -36,7 +36,7 @@ fetch('getWarehouseCoordinates.php')
             var confirmMove = confirm("Do you want to move the marker to the new location?");
             if (confirmMove) {
                 // Send updated coordinates to the server
-                fetch('updateWarehouseCoordinates.php', {
+                fetch('warehouse_update_coordinates.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
