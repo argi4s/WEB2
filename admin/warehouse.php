@@ -9,17 +9,34 @@
 <body>
     <h1>Warehouse Management</h1>
     <form id="productForm" method="POST" action="">
-        <label for="productName">product Name</label>
+        <label for="productName">Product Name</label>
         <input type="text" id="productName" name="productName" required><br><br>
     
-        <label for="productCategory">product Category</label>
-        <input type="text" id="productCategory" name="productCategory" required><br><br>
+        <label for="productCategory">Product Category</label>
+        <select id="productCategory" name="productCategory" required>
+            <!-- Options will be populated by JavaScript -->
+        </select><br><br>
         
-        <label for="productQuantity">product Quantity</label>
+        <label for="productQuantity">Product Quantity</label>
         <input type="number" id="productQuantity" name="productQuantity" required><br><br>
         
-        <input type="submit" value="Add product">
+        <input type="submit" value="Add Product">
     </form>
+
+    <script>
+        // JavaScript function to populate the product categories
+        document.addEventListener("DOMContentLoaded", function() {
+            var categories = ["FOOD", "DRINK", "TOOL", "MEDS", "OTHER"];
+            var select = document.getElementById("productCategory");
+
+            categories.forEach(function(category) {
+                var option = document.createElement("option");
+                option.value = category;
+                option.text = category;
+                select.appendChild(option);
+            });
+        });
+    </script>
     
     <?php
     $host = "localhost";
