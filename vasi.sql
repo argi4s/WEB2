@@ -148,18 +148,18 @@ INSERT INTO announcements (announcementTitle, announcementText) VALUES
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
 ('citizen1', 1, 10, 'pending'),
-('citizen2', 2, 20, 'taken'),
-('citizen3', 3, 5, 'finished'),
+('citizen2', 2, 20, 'pending'),
+('citizen3', 3, 5, 'pending'),
 ('citizen4', 4, 7, 'pending'),
-('citizen5', 5, 15, 'taken');
+('citizen5', 5, 15, 'pending');
 
 -- Insert data into offers table
 INSERT INTO offers (username, productId, quantity, status) VALUES
 ('citizen1', 1, 5, 'pending'),
-('citizen2', 2, 10, 'taken'),
-('citizen3', 3, 3, 'finished'),
+('citizen2', 2, 10, 'pending'),
+('citizen3', 3, 3, 'pending'),
 ('citizen4', 4, 8, 'pending'),
-('citizen5', 5, 12, 'taken');
+('citizen5', 5, 12, 'pending');
 
 -- Insert data into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES

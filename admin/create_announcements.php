@@ -20,7 +20,7 @@
     
     <?php
     $host = "localhost";
-    $dbname = "WEB2";
+    $dbname = "vasi";
     $username = "root";
     $password = "";
 
@@ -31,10 +31,10 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["title"])) {
-        $title = $_POST["title"];
-        $description = $_POST["description"];
+        $title = $_POST["announcementTitle"];
+        $text = $_POST["announcementText"];
         
-        $sql = "INSERT INTO announcements (title, description) VALUES (?, ?)";
+        $sql = "INSERT INTO announcements (announcementTitle, announcementText) VALUES (?, ?)";
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -42,7 +42,7 @@
             die(mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "ss", $title, $description);
+        mysqli_stmt_bind_param($stmt, "ss", $title, $text);
 
         mysqli_stmt_execute($stmt);
 
@@ -80,8 +80,8 @@
         while ($row = $result->fetch_assoc()) {
             echo "<tr>
                     <td>{$row['announcementId']}</td>
-                    <td>{$row['title']}</td>
-                    <td>{$row['description']}</td>
+                    <td>{$row['announcementTitle']}</td>
+                    <td>{$row['announcementText']}</td>
                     <td>
                         <form method='POST' action=''>
                             <input type='hidden' name='deleteId' value='{$row['announcementId']}'>

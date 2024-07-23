@@ -92,9 +92,11 @@
         echo "Product Quantity Updated<br><br>";
     }
 
+    // Fetch warehouse data
     $result = mysqli_query($conn, "SELECT * FROM warehouse ORDER BY productCategory");
 
     if ($result->num_rows > 0) {
+        echo "<h2>Warehouse Products</h2>";
         echo "<table border='1'>
                 <tr>
                     <th>Product ID</th>
@@ -125,6 +127,36 @@
     } else {
         echo "No products found.";
     }
+
+    // Fetch onvehicles data
+    $vehicles_result = mysqli_query($conn, "SELECT * FROM onvehicles");
+
+    if ($vehicles_result->num_rows > 0) {
+        echo "<h2>Products on Vehicles</h2>";
+        $vehicles = [];
+        while ($row = $vehicles_result->fetch_assoc()) {
+            $vehicles[$row['rescuerUsername']][] = $row;
+        }
+
+        foreach ($vehicles as $rescuerUsername => $products) {
+            echo "<h3>Vehicle: $rescuerUsername</h3>";
+            echo "<table border='1'>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Product Quantity</th>
+                    </tr>";
+            foreach ($products as $product) {
+                echo "<tr>
+                        <td>{$product['productName']}</td>
+                        <td>{$product['productQuantity']}</td>
+                      </tr>";
+            }
+            echo "</table><br>";
+        }
+    } else {
+        echo "No products on vehicles found.";
+    }
+
     mysqli_close($conn);
     ?>
     <br>

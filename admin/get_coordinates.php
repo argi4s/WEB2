@@ -34,7 +34,22 @@ if ($citizens_result->num_rows > 0) {
     }
 }
 
-echo json_encode(['rescuers' => $rescuers, 'citizens' => $citizens]);
+/*    ------------PAPADEROS-----------
+Diaxeirisths 3) Probolh xarth b) (kai paromoia fash to c, trekse ton xarth kai pata ta popups gia na katalabeis ti kanoune)
+Na breis me poio querry mporeis na emfaniseis ta zhtoumena. Gia to php/js kommati mhn anhsuxeis, ta apo panw paradeigmata mazi me to map_functionality.js arxeio tha se kathodhghsoun
+// Fetch requests
+$requests_sql = "SELECT createdAt, productId, quantity FROM requests";
+$requests_result = $conn->query($requests_sql);
+
+$requests = [];
+if ($requests_result->num_rows > 0) {
+    while ($row = $requests_result->fetch_assoc()) {
+        $requests[] = $row;
+    }
+}
+*/
+
+echo json_encode(['rescuers' => $rescuers, 'citizens' => $citizens]);   //isws xreiastei na baleis ta requests kai edw
 
 $conn->close();
 ?>
