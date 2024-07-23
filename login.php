@@ -13,15 +13,25 @@ $user_password = $input['password'];
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
+    error_log('Database connection failed: ' . $conn->connect_error);
     die(json_encode(['success' => false, 'message' => 'Database connection failed']));
 }
 
 $stmt = $conn->prepare("SELECT is_admin FROM users WHERE username = ? AND password = ?");
 $stmt->bind_param("ss", $user_username, $user_password);
 
-$stmt->execute();
+// Execute the statement
+if (!$stmt->execute()) {
+    error_log('Statement execution failed: ' . $stmt->error);
+    echo json_encode(['success' => false, 'message' => 'Server error']);
+    exit;
+}
 
 $result = $stmt->get_result();
+
+// Initialize the variables to null
+$stmt_rescuer = null;
+$stmt_citizen = null;
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -54,8 +64,13 @@ if ($result->num_rows > 0) {
     echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
 }
 
+// Close the statements and connection
 $stmt->close();
-$stmt_rescuer->close();
-$stmt_citizen->close();
+if (isset($stmt_rescuer) && $stmt_rescuer !== null) {
+    $stmt_rescuer->close();
+}
+if (isset($stmt_citizen) && $stmt_citizen !== null) {
+    $stmt_citizen->close();
+}
 $conn->close();
 ?>
