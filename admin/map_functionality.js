@@ -81,13 +81,13 @@ fetch('get_coordinates.php')
         // Add rescuers markers
         data.rescuers.forEach(function(rescuer) {
             L.marker([rescuer.latitude, rescuer.longitude], { icon: carIcon }).addTo(map)
-                .bindPopup("Rescuer location: " + [rescuer.latitude, rescuer.longitude].toString());
+                .bindPopup("Rescuer: " + rescuer.username + "<br>Location: " + [rescuer.latitude, rescuer.longitude].toString());
         });
 
         // Add citizens markers
         data.citizens.forEach(function(citizen) {
             L.marker([citizen.latitude, citizen.longitude], { icon: greenIcon }).addTo(map)
-                .bindPopup("Citizen location: " + [citizen.latitude, citizen.longitude].toString());
+                .bindPopup("Citizen: " + citizen.name + " " + citizen.surname + "<br>Phone: " + citizen.phone + "<br>Location: " + [citizen.latitude, citizen.longitude].toString());
         });
     })
     .catch(error => console.error('Error fetching coordinates:', error));

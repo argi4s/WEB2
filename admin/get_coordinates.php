@@ -12,8 +12,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch rescuers
-$rescuers_sql = "SELECT latitude, longitude FROM rescuers";
+// Fetch rescuers with usernames
+$rescuers_sql = "SELECT username, latitude, longitude FROM rescuers";
 $rescuers_result = $conn->query($rescuers_sql);
 
 $rescuers = [];
@@ -24,7 +24,7 @@ if ($rescuers_result->num_rows > 0) {
 }
 
 // Fetch citizens
-$citizens_sql = "SELECT latitude, longitude FROM citizens";
+$citizens_sql = "SELECT name, surname, phone, latitude, longitude FROM citizens";
 $citizens_result = $conn->query($citizens_sql);
 
 $citizens = [];
