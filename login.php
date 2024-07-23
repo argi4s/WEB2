@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
 $servername = "localhost";
@@ -37,7 +38,10 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $is_admin = $row['is_admin'];
 
+    $_SESSION['username'] = $user_username;
+
     if ($is_admin) {
+        $_SESSION['role'] = 'admin';
         echo json_encode(['success' => true, 'role' => 'admin']);
     } else {
         $stmt_rescuer = $conn->prepare("SELECT username FROM rescuers WHERE username = ?");
@@ -46,6 +50,7 @@ if ($result->num_rows > 0) {
         $result_rescuer = $stmt_rescuer->get_result();
 
         if ($result_rescuer->num_rows > 0) {
+            $_SESSION['role'] = 'rescuer';
             echo json_encode(['success' => true, 'role' => 'rescuer']);
         } else {
             $stmt_citizen = $conn->prepare("SELECT username FROM citizens WHERE username = ?");
@@ -54,6 +59,7 @@ if ($result->num_rows > 0) {
             $result_citizen = $stmt_citizen->get_result();
 
             if ($result_citizen->num_rows > 0) {
+                $_SESSION['role'] = 'citizen';
                 echo json_encode(['success' => true, 'role' => 'citizen']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Role not found']);

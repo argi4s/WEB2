@@ -1,3 +1,8 @@
+<?php
+require_once '../session_check.php';
+check_login('rescuer');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +17,9 @@
         
         <a href="rescuer_map.php" class="button yellow">Map/Tasks</a>
         
-        <a href="vehicle_storage_page.html" class="button yellow">View Vehicle Storage</a>
+        <a href="vehicle_storage_page.php" class="button yellow">View Vehicle Storage</a>
         
-        <a href="../login.html" class="button logout">Log out</a>
+        <a href="logout.php" class="button logout">Log out</a>
 
     </div>
 </body>

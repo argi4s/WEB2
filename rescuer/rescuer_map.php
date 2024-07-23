@@ -1,3 +1,8 @@
+<?php
+require_once '../session_check.php';
+check_login('rescuer');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +63,7 @@
                 <button class="filter-btn active" id="filter4" onclick="applyFilter('filter4')">My Tasks</button>
             </div>
 
-            <a href="rescuer_main_page.html" class="button back" style="margin-top: 30px;">Back to Main Page</a>
+            <a href="rescuer_main_page.php" class="button back" style="margin-top: 30px;">Back to Main Page</a>
  
         </div>
         <div class="map-container">

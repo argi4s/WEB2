@@ -1,3 +1,8 @@
+<?php
+require_once '../session_check.php';
+check_login('rescuer');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +24,7 @@
         
         <a href="add_item_page.php" class="button green">Add Item</a>
         
-        <a href="rescuer_main_page.html" class="button back">Back to Main Page</a>
+        <a href="rescuer_main_page.php" class="button back">Back to Main Page</a>
 
     </div>
 </body>

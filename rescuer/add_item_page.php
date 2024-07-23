@@ -1,3 +1,8 @@
+<?php
+require_once '../session_check.php';
+check_login('rescuer');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +16,7 @@
     <div class="container" style="height: auto; width: auto;">
         <div class="form-container">
             <h2>What item are you adding?</h2>
-            <form action="add_item_page.html" method="post">
+            <form action="add_item_page.php" method="post">
                 <div class="form-group">
                     <label for="name">Item Name:</label>
                         <select id="name" name="name" required>
@@ -26,9 +31,9 @@
         </div>
         <div class="container" style="display: flex; justify-content: center; gap: 10px;">
         
-            <a href="vehicle_storage_page.html" class="button">Cancel</a>
+            <a href="vehicle_storage_page.php" class="button">Cancel</a>
         
-            <a href="vehicle_storage_page.html" class="button green">Add</a>
+            <a href="vehicle_storage_page.php" class="button green">Add</a>
 
         </div>
     </div>
