@@ -70,10 +70,14 @@
         echo "Product Saved<br><br>";
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["deleteId"])) {
-        $deleteId = $_POST["deleteId"];
-
-        $sql = "DELETE FROM warehouse WHERE productId = ?";
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && (isset($_POST["incrementId"]) || isset($_POST["decrementId"]))) {
+        if (isset($_POST["incrementId"])) {
+            $productId = $_POST["incrementId"];
+            $sql = "UPDATE warehouse SET productQuantity = productQuantity + 1 WHERE productId = ?";
+        } else if (isset($_POST["decrementId"])) {
+            $productId = $_POST["decrementId"];
+            $sql = "UPDATE warehouse SET productQuantity = IF(productQuantity > 0, productQuantity - 1, 0) WHERE productId = ?";
+        }
 
         $stmt = mysqli_stmt_init($conn);
 
@@ -81,14 +85,14 @@
             die(mysqli_error($conn));
         }
 
-        mysqli_stmt_bind_param($stmt, "i", $deleteId);
+        mysqli_stmt_bind_param($stmt, "i", $productId);
 
         mysqli_stmt_execute($stmt);
 
-        echo "Record Deleted<br><br>";
+        echo "Product Quantity Updated<br><br>";
     }
 
-    $result = mysqli_query($conn, "SELECT * FROM warehouse");
+    $result = mysqli_query($conn, "SELECT * FROM warehouse ORDER BY productCategory");
 
     if ($result->num_rows > 0) {
         echo "<table border='1'>
@@ -106,9 +110,13 @@
                     <td>{$row['productCategory']}</td>
                     <td>{$row['productQuantity']}</td>
                     <td>
-                        <form method='POST' action=''>
-                            <input type='hidden' name='deleteId' value='{$row['productId']}'>
-                            <input type='submit' value='Delete'>
+                        <form method='POST' action='' style='display:inline-block;'>
+                            <input type='hidden' name='incrementId' value='{$row['productId']}'>
+                            <input type='submit' value='+'>
+                        </form>
+                        <form method='POST' action='' style='display:inline-block;'>
+                            <input type='hidden' name='decrementId' value='{$row['productId']}'>
+                            <input type='submit' value='-'>
                         </form>
                     </td>
                   </tr>";

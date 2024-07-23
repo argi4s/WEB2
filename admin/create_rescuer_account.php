@@ -72,17 +72,14 @@
         $latitude = $_POST["latitude"];
         $longitude = $_POST["longitude"];
 
-        // Validate phone number server-side
-        if (!preg_match('/^\d{10}$/', $phone)) {
+        if (!preg_match('/^\d{10}$/', $phone)) {                                                // Validate phone number server-side
             die("Phone number must be a 10-digit number.");
         }
 
-        // Start a transaction
-        mysqli_begin_transaction($conn);
+        mysqli_begin_transaction($conn);                                                        // Start a transaction
 
         try {
-            // Insert into users table
-            $user_sql = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, 0)";
+            $user_sql = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, 0)";    // Insert into users table
             $stmt = mysqli_stmt_init($conn);
 
             if (!mysqli_stmt_prepare($stmt, $user_sql)) {
@@ -91,8 +88,7 @@
 
             mysqli_stmt_bind_param($stmt, "ss", $username, $password);
             mysqli_stmt_execute($stmt);
-
-            // Insert into rescuers table
+                                                                                                // Insert into rescuers table
             $rescuer_sql = "INSERT INTO rescuers (username, name, surname, phone, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?)";
 
             if (!mysqli_stmt_prepare($stmt, $rescuer_sql)) {
@@ -102,13 +98,11 @@
             mysqli_stmt_bind_param($stmt, "ssssdd", $username, $name, $surname, $phone, $latitude, $longitude);
             mysqli_stmt_execute($stmt);
 
-            // Commit transaction
-            mysqli_commit($conn);
+            mysqli_commit($conn);                                                               // Commit transaction
 
             echo "Rescuer account created successfully<br><br>";
         } catch (Exception $e) {
-            // Rollback transaction
-            mysqli_rollback($conn);
+            mysqli_rollback($conn);                                                             // Rollback transaction
 
             echo "Failed to create rescuer account: " . $e->getMessage() . "<br><br>";
         }
@@ -153,12 +147,10 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["deleteUsername"])) {
         $deleteUsername = $_POST["deleteUsername"];
 
-        // Start a transaction
-        mysqli_begin_transaction($conn);
+        mysqli_begin_transaction($conn);                                            // Start a transaction
 
         try {
-            // Delete from rescuers table
-            $rescuer_delete_sql = "DELETE FROM rescuers WHERE username = ?";
+            $rescuer_delete_sql = "DELETE FROM rescuers WHERE username = ?";        // Delete from rescuers table
             $stmt = mysqli_stmt_init($conn);
 
             if (!mysqli_stmt_prepare($stmt, $rescuer_delete_sql)) {
@@ -168,8 +160,7 @@
             mysqli_stmt_bind_param($stmt, "s", $deleteUsername);
             mysqli_stmt_execute($stmt);
 
-            // Delete from users table
-            $user_delete_sql = "DELETE FROM users WHERE username = ?";
+            $user_delete_sql = "DELETE FROM users WHERE username = ?";              // Delete from users table
             if (!mysqli_stmt_prepare($stmt, $user_delete_sql)) {
                 throw new Exception(mysqli_error($conn));
             }
@@ -177,13 +168,11 @@
             mysqli_stmt_bind_param($stmt, "s", $deleteUsername);
             mysqli_stmt_execute($stmt);
 
-            // Commit transaction
-            mysqli_commit($conn);
+            mysqli_commit($conn);                                                   // Commit transaction
 
             echo "Rescuer deleted successfully<br><br>";
         } catch (Exception $e) {
-            // Rollback transaction
-            mysqli_rollback($conn);
+            mysqli_rollback($conn);                                                 // Rollback transaction
 
             echo "Failed to delete rescuer: " . $e->getMessage() . "<br><br>";
         }
