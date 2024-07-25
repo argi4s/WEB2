@@ -16,7 +16,7 @@ $endDate = $_POST['endDate'];
 $response = [];
 
 // Fetch new requests
-$sql = "SELECT COUNT(*) AS count FROM requests WHERE createdAt BETWEEN ? AND ?";
+$sql = "SELECT COUNT(*) AS count FROM requests WHERE createdAt BETWEEN ? AND ?";                    // Dialegei requests sto xroniko plaisio pou orizei sto interface o xrhsths
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ss", $startDate, $endDate);
 $stmt->execute();
@@ -24,7 +24,7 @@ $result = $stmt->get_result();
 $response['newRequests'] = $result->fetch_assoc()['count'];
 
 // Fetch new offers
-$sql = "SELECT COUNT(*) AS count FROM offers WHERE createdAt BETWEEN ? AND ?";
+$sql = "SELECT COUNT(*) AS count FROM offers WHERE createdAt BETWEEN ? AND ?";                      // Dialegei offers sto xroniko plaisio pou orizei sto interface o xrhsths
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ss", $startDate, $endDate);
 $stmt->execute();

@@ -6,25 +6,10 @@
     <title>Chart Example</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .chart-container {
-            width: 80%;
-            margin: 50px auto;
-        }
-        .controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .controls input {
-            margin: 0 10px;
-        }
-    </style>
+    
 </head>
 <body>
-    <div class="controls">
+    <div class="controls">                                                                          <!--Koumpia-->
         <label for="startDate">Start Date: </label>
         <input type="date" id="startDate">
         <label for="endDate">End Date: </label>
@@ -35,12 +20,12 @@
         <canvas id="myChart"></canvas>
     </div>
 
-    <script>
+    <script>                                                                                        // dhmiourgia chart bar
         var ctx = document.getElementById('myChart').getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['New Requests', 'New Offers', 'Completed Requests', 'Completed Offers'],
+                labels: ['New Requests', 'New Offers', 'Completed Requests', 'Completed Offers'],   // labels
                 datasets: [{
                     label: '# of Items',
                     data: [0, 0, 0, 0],
@@ -69,10 +54,10 @@
         });
 
         function updateChart() {
-            var startDate = document.getElementById('startDate').value;
+            var startDate = document.getElementById('startDate').value;                             // get user input
             var endDate = document.getElementById('endDate').value;
 
-            fetch('fetch_chart_data.php', {
+            fetch('fetch_chart_data.php', {                                                         // send HTTP POST requst to php file
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
