@@ -19,7 +19,7 @@ check_login('rescuer');
         
         <a href="vehicle_storage_page.php" class="button yellow">View Vehicle Storage</a>
         
-        <a href="logout.php" class="button logout">Log out</a>
+        <a href="../logout.php" class="button logout">Log out</a>
 
     </div>
 </body>

@@ -48,8 +48,8 @@ check_login('admin');
 <body>
     <div class="container">
         <a href="warehouse.php" class="button">Show Warehouse</a>
-        <a href="map.html" class="button">Show Map</a>
-        <a href="statistics.html" class="button">Show Statistics</a>
+        <a href="map.php" class="button">Show Map</a>
+        <a href="statistics.php" class="button">Show Statistics</a>
         <a href="create_rescuer_account.php" class="button yellow">Create Rescuer Account</a>
         <a href="create_announcements.php" class="button yellow">Create Announcement</a>
         <a href="../logout.php" class="button logout">Log out</a>

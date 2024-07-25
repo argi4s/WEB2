@@ -53,9 +53,9 @@
 
                 if (result.success) {
                     if (result.role === 'admin') {
-                        window.location.href = 'admin/admin_main_page.html';
+                        window.location.href = 'admin/admin_main_page.php';
                     } else if (result.role === 'citizen') {
-                        window.location.href = '../WEB2/citizen/citizen_main_page.php';
+                        window.location.href = 'citizen/citizen_main_page.php';
                     } else if (result.role === 'rescuer') {
                         window.location.href = 'rescuer/rescuer_main_page.php';
                     }

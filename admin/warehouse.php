@@ -165,6 +165,6 @@ check_login('admin');
     mysqli_close($conn);
     ?>
     <br>
-    <a href="admin_main_page.html" class="button">Main Page</a>
+    <a href="admin_main_page.php" class="button">Main Page</a>
 </body>
 </html>
