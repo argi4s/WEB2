@@ -10,7 +10,7 @@ function check_login($required_role = null) {
 
     if ($required_role && $_SESSION['role'] !== $required_role) {
         // User does not have the required role
-        header('Location: unauthorized.html');
+        header('Location: ../unauthorized.html');
         exit;
     }
 }

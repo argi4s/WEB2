@@ -1,6 +1,6 @@
 <?php
 require_once '../session_check.php';
-check_login('rescuer');
+check_login('admin');
 ?>
 
 <!DOCTYPE html>
