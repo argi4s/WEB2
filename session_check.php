@@ -4,7 +4,7 @@ session_start();
 function check_login($required_role = null) {
     if (!isset($_SESSION['username']) || !isset($_SESSION['role'])) {
         // User is not logged in
-        header('Location: login.html');
+        header('Location: ../login.html');
         exit;
     }
 
