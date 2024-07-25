@@ -1,3 +1,8 @@
+<?php
+require_once '../session_check.php';
+check_login('admin');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
