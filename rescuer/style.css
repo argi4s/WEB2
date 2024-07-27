@@ -61,6 +61,10 @@ body {
     display: flex;
     box-sizing: border-box; /* Ensure padding is included in the total width */
 }
+.minimap-container {
+    height: 360px;
+    margin: 20px 0;    
+}
 #map {
     width: 100%;
     height: calc(100vh-50px);
@@ -189,4 +193,15 @@ body {
 }
 .text-button:hover {
     color: blue;
+}
+.grid_parent {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 10px; /* Space between the columns */
+    padding: 10px;
+}
+
+.grid_child {
+    padding: 20px;
+    text-align: center;
 }
