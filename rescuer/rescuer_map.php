@@ -15,7 +15,7 @@ check_login('rescuer');
 
 <body>
     <div class="container" style="display: flex; justify-content: start;">
-        <div class="container" style="width: 300px; margin: 1%;">
+        <div class="container" style="width: 300px; margin: 1%; display: flex; flex-direction: column;">
         
             <h1>My Tasks</h1>
 
@@ -56,14 +56,14 @@ check_login('rescuer');
                 <div class="tasktainer"></div>
             </div>
             
-            <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: 40px">
+            <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: auto;">
                 <button class="filter-btn active" id="filter1" onclick="applyFilter('filter1')">Rescuers</button>
                 <button class="filter-btn active" id="filter2" onclick="applyFilter('filter2')">Requests</button>
                 <button class="filter-btn active" id="filter3" onclick="applyFilter('filter3')">Offers</button>
                 <button class="filter-btn active" id="filter4" onclick="applyFilter('filter4')">My Tasks</button>
             </div>
 
-            <a href="rescuer_main_page.php" class="button back" style="margin-top: 30px;">Back to Main Page</a>
+            <a href="rescuer_main_page.php" class="button back" style="margin-top: auto; margin-bottom: 25px;">Back to Main Page</a>
  
         </div>
         <div class="map-container">

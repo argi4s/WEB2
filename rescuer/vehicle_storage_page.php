@@ -16,10 +16,7 @@ check_login('rescuer');
     <div class="container" style="height: auto; width: auto;">
         <div class="itemlist">
             <h2>Vehicle's Storage</h2>
-            <div class="list-item">Νερό</div>
-            <div class="list-item">2 κιλά μαύρο</div>
-            <div class="list-item">Dior Sauvage</div>
-            <div class="list-item">Pandabuy Haul</div>
+            <?php include 'fetch_vehicle_storage.php'; ?>
         </div>
         
         <a href="add_item_page.php" class="button green">Add Item</a>
