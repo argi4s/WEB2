@@ -11,7 +11,7 @@
     <div class="container" style="height: auto; width: auto;">
         <div class="form-container" style="width: 900px;">
             <h2>Give some info about yourself</h2>
-            <form id="registration-form" method="post" action="register.php">
+            <form id="registration-form" method="post" action="registercheck.php">
                 <div class="grid_parent">
                     <div class="grid_child">
                         <div class="form-group">
@@ -38,8 +38,8 @@
                     <div class="grid_child">
                         <label for="location">Please select your location:</label>
                         <div id="map" class="minimap-container"></div>
-                        <input type="hidden" id="latitude" name="latitude" required>
-                        <input type="hidden" id="longitude" name="longitude" required>
+                        <input type="hidden" id="latitude" name="latitude">
+                        <input type="hidden" id="longitude" name="longitude">
                     </div>
                 </div>
                 <div class="form-group" style="display: flex; justify-content: center; gap: 10px;">
@@ -106,4 +106,3 @@
     </script>
 </body>
 </html>
-
