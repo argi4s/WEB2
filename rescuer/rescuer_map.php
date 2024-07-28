@@ -20,40 +20,7 @@ check_login('rescuer');
             <h1>My Tasks</h1>
 
             <div class="scroll-container" style="height: 50%;">
-                <div class="tasktainer offer">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallred">Cancel</a>
-                        <a class="button smallgreen">Finish</a>
-                    </div>
-                </div>
-                <div class="tasktainer request">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallred">Cancel</a>
-                        <a class="button smallgreen">Finish</a>
-                    </div>
-                </div>
-                <div class="tasktainer request">
-                    <div class="text">
-                        <p class="bold-text">4 τούβλα κοκόρι</p>
-                        <p class="subtext">Ηλίας Αργυράκης - 6946592549</p>
-                        <p class="subtext">7/13/2024 6:34pm</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallred">Cancel</a>
-                        <a class="button smallgreen">Finish</a>
-                    </div>
-                </div>
-                <div class="tasktainer"></div>
+                <?php include 'fetch_my_tasks.php'; ?>
             </div>
             
             <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: auto;">
