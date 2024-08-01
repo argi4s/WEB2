@@ -30,7 +30,7 @@ $sql = "
     LEFT JOIN offers o ON rt.taskType = 'offer' AND rt.taskIdRef = o.offerId
     LEFT JOIN citizens c ON (r.username = c.username OR o.username = c.username)
     LEFT JOIN warehouse w ON (r.productId = w.productId OR o.productId = w.productId)
-    WHERE rt.rescuerUsername = ?";
+    WHERE rt.rescuerUsername = ? AND (rt.taskType = 'request' AND r.status = 'taken' OR rt.taskType = 'offer' AND o.status = 'taken')";
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $rescuerUsername);

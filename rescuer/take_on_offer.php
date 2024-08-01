@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -16,13 +18,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 throw new Exception("Connection failed: " . $conn->connect_error);
             }
 
-            $stmt = $conn->prepare("UPDATE offers SET status = 'taken' WHERE offerId = ?");
-            $stmt->bind_param("i", $offerId);
+            // Get the username from the session
+            $rescuerUsername = $_SESSION['username'];
+
+            // Prepare statement to insert into rescuer_tasks
+            $stmt = $conn->prepare("INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES (?, 'offer', ?)");
+            $stmt->bind_param("si", $rescuerUsername, $offerId);
 
             if ($stmt->execute()) {
-                echo "Offer status updated successfully.";
+                echo "Offer taken successfully.";
             } else {
-                echo "Error updating offer status: " . $stmt->error;
+                echo "Error taking offer: " . $stmt->error;
             }
 
             $stmt->close();

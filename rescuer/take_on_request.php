@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -16,13 +18,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 throw new Exception("Connection failed: " . $conn->connect_error);
             }
 
-            $stmt = $conn->prepare("UPDATE requests SET status = 'taken' WHERE requestId = ?");
-            $stmt->bind_param("i", $requestId);
+            // Get the username from the session
+            $rescuerUsername = $_SESSION['username'];
+
+            // Prepare statement to insert into rescuer_tasks
+            $stmt = $conn->prepare("INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES (?, 'request', ?)");
+            $stmt->bind_param("si", $rescuerUsername, $requestId);
 
             if ($stmt->execute()) {
-                echo "Request status updated successfully.";
+                echo "Request taken successfully.";
             } else {
-                echo "Error updating request status: " . $stmt->error;
+                echo "Error taking request: " . $stmt->error;
             }
 
             $stmt->close();

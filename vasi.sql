@@ -81,6 +81,7 @@ CREATE TABLE offers (
 )engine=InnoDB;
 
 CREATE TABLE rescuer_tasks (
+    taskId INT AUTO_INCREMENT PRIMARY KEY,
     rescuerUsername VARCHAR(25) NOT NULL,
     taskType ENUM('request', 'offer') NOT NULL,
     taskIdRef INT NOT NULL,
@@ -88,6 +89,26 @@ CREATE TABLE rescuer_tasks (
     FOREIGN KEY (taskIdRef) REFERENCES requests(requestId) ON DELETE CASCADE,
     FOREIGN KEY (taskIdRef) REFERENCES offers(offerId) ON DELETE CASCADE
 )engine=InnoDB;
+
+DELIMITER //
+
+CREATE TRIGGER update_status_on_rescuer_tasks_insert
+AFTER INSERT ON rescuer_tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.taskType = 'offer' THEN
+        UPDATE offers
+        SET status = 'taken'
+        WHERE offerId = NEW.taskIdRef;
+    ELSEIF NEW.taskType = 'request' THEN
+        UPDATE requests
+        SET status = 'taken'
+        WHERE requestId = NEW.taskIdRef;
+    END IF;
+END;
+
+//
+DELIMITER ;
 
 -- Insert data into base table
 INSERT INTO base (latitude, longitude) VALUES (37.9038, 23.7275);
@@ -147,7 +168,7 @@ INSERT INTO announcements (announcementTitle, announcementText) VALUES
 
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
-('citizen1', 1, 10, 'pending'),
+('citizen1', 1, 10, 'taken'),
 ('citizen2', 2, 20, 'pending'),
 ('citizen3', 3, 5, 'pending'),
 ('citizen4', 4, 7, 'pending'),
@@ -164,7 +185,3 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 -- Insert data into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES
 ('rescuer1', 'request', 1),
-('rescuer2', 'request', 2),
-('rescuer3', 'offer', 3),
-('rescuer4', 'offer', 4),
-('rescuer5', 'request', 5);
