@@ -42,8 +42,7 @@ if ($stmt->num_rows > 0) {
     // Insert into users table
     $sql_insert_user = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, false)";
     $stmt_user = $conn->prepare($sql_insert_user);
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-    $stmt_user->bind_param("ss", $username, $hashed_password);
+    $stmt_user->bind_param("ss", $username, $password);
     $stmt_user->execute();
     
     // Insert into citizens table
