@@ -20,9 +20,42 @@ check_login('rescuer');
         </div>
         
         <a href="add_item_page.php" class="button green">Add Item</a>
+
+        <button id="unloadAllButton" class="button red">Unload all</button>
         
         <a href="rescuer_main_page.php" class="button back">Back to Main Page</a>
 
     </div>
+
+    <script>
+        document.getElementById('unloadAllButton').addEventListener('click', async function() {
+            try {
+                const response = await fetch('unload_items.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Items moved to warehouse successfully.');
+                    location.reload(); // Refresh the page
+                } else {
+                    alert('Operation failed: ' + result.message);
+                }
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+
 </body>
 </html>
