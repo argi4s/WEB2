@@ -38,7 +38,7 @@ CREATE TABLE base (
 
 CREATE TABLE warehouse (
 	productId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    productName VARCHAR(25) NOT NULL,
+    productName VARCHAR(25) UNIQUE NOT NULL,
     productCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') NOT NULL,
     productQuantity INT NOT NULL
 )engine=InnoDB;

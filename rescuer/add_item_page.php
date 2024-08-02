@@ -16,7 +16,7 @@ check_login('rescuer');
     <div class="container" style="height: auto; width: auto;">
         <div class="form-container">
             <h2>What item are you adding?</h2>
-            <form action="add_item_page.php" method="post">
+            <form id="addItemForm">
                 <div class="form-group">
                     <label for="name">Item Name:</label>
                         <select id="name" name="name" required>
@@ -25,17 +25,51 @@ check_login('rescuer');
                 </div>
                 <div class="form-group">
                     <label for="quantity">Item Quantity:</label>
-                    <input type="number" id="quantity" name="quantity" required>
+                    <input type="number" id="quantity" name="quantity" min="1" required>
+                </div>
+                <div class="container" style="display: flex; justify-content: center; gap: 10px;">
+                    <a href="vehicle_storage_page.php" class="button">Go Back</a>
+                    <button type="submit" class="button green">Add</button>
                 </div>
             </form>
         </div>
-        <div class="container" style="display: flex; justify-content: center; gap: 10px;">
-        
-            <a href="vehicle_storage_page.php" class="button">Cancel</a>
-        
-            <a href="vehicle_storage_page.php" class="button green">Add</a>
-
-        </div>
     </div>
+
+    <script>
+        document.getElementById('addItemForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const quantity = document.getElementById('quantity').value;
+
+            try {
+                const response = await fetch('add_item.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, quantity })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Handle the success case
+                    alert('Item added successfully.');
+                    // Optionally reset the form
+                    document.getElementById('addItemForm').reset();
+        } else {
+            alert('Item addition failed: ' + result.message);
+        }
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        alert('An error occurred. Please try again.');
+    }
+
+        });
+    </script>
 </body>
 </html>
