@@ -21,6 +21,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Get the username from the session
             $rescuerUsername = $_SESSION['username'];
 
+            // Check the number of pending tasks
+            $pendingTasksStmt = $conn->prepare("
+                SELECT COUNT(*) as pendingTasksCount 
+                FROM rescuer_tasks rt
+                LEFT JOIN requests r ON rt.taskType = 'request' AND rt.taskIdRef = r.requestId
+                LEFT JOIN offers o ON rt.taskType = 'offer' AND rt.taskIdRef = o.offerId
+                WHERE rt.rescuerUsername = ? AND COALESCE(r.status, o.status) = 'taken'");
+            $pendingTasksStmt->bind_param("s", $rescuerUsername);
+            $pendingTasksStmt->execute();
+            $pendingTasksResult = $pendingTasksStmt->get_result();
+            $pendingTasksRow = $pendingTasksResult->fetch_assoc();
+            $pendingTasksCount = $pendingTasksRow['pendingTasksCount'];
+
+            if ($pendingTasksCount >= 4) {
+                echo "Error: You already have 4 active tasks.";
+                $pendingTasksStmt->close();
+                $conn->close();
+                exit;
+            }
+
+            $pendingTasksStmt->close();
+
             // Prepare statement to insert into rescuer_tasks
             $stmt = $conn->prepare("INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES (?, 'request', ?)");
             $stmt->bind_param("si", $rescuerUsername, $requestId);

@@ -50,8 +50,15 @@ function takeOnOffer(offerId) {
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            alert('Offer taken!');
-            location.reload(); // Reload the page to reflect the changes
+            var response = xhr.responseText;
+            if (response.includes("Offer taken successfully")) {
+                alert('Offer taken!');
+                location.reload(); // Reload the page to reflect the changes
+            } else if (response.includes("You already have 4 active tasks")) {
+                alert('You already have 4 active tasks.');
+            } else {
+                alert('Error: ' + response);
+            }
         }
     };
     xhr.send("offerId=" + offerId);

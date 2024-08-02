@@ -50,8 +50,15 @@ function takeOnRequest(requestId) {
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            alert('Request taken!');
-            location.reload(); // Reload the page to reflect the changes
+            var response = xhr.responseText;
+            if (response.includes("Request taken successfully")) {
+                alert('Request taken!');
+                location.reload(); // Reload the page to reflect the changes
+            } else if (response.includes("You already have 4 active tasks")) {
+                alert('You already have 4 active tasks.');
+            } else {
+                alert('Error: ' + response);
+            }
         }
     };
     xhr.send("requestId=" + requestId);
