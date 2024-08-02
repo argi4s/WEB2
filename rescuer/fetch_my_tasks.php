@@ -18,6 +18,7 @@ $sql = "
     SELECT 
         rt.taskType as taskType,
         rt.taskIdRef,
+        rt.taskId as id,
         c.name AS citizenName,
         c.surname AS citizenSurname,
         c.phone AS citizenPhone,
@@ -47,8 +48,8 @@ if ($result->num_rows > 0) {
                         <p class="subtext">' . htmlspecialchars($row['createdAt']) . '</p>
                     </div>
                     <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallred">Cancel</a>
-                        <a class="button smallgreen">Finish</a>
+                        <a class="button smallred" onclick="cancelTask(' . htmlspecialchars($row['id']) . ')">Cancel</a>
+                        <a class="button smallgreen" onclick="finishTask(' . htmlspecialchars($row['id']) . ')">Finish</a>
                     </div>
                 </div>';
     }
@@ -63,3 +64,33 @@ if ($result->num_rows > 0) {
 // Close the statement and connection
 $stmt->close();
 $conn->close();
+
+?>
+
+<script>
+function cancelTask(id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "cancel_task.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert('Task canceled!');
+            location.reload(); // Reload the page to reflect the changes
+        }
+    };
+    xhr.send("id=" + id);
+}
+
+function finishTask(id) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "finish_task.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert('Task finished!');
+            location.reload(); // Reload the page to reflect the changes
+        }
+    };
+    xhr.send("id=" + id);
+}
+</script>

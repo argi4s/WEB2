@@ -92,7 +92,7 @@ CREATE TABLE rescuer_tasks (
 
 DELIMITER //
 
-CREATE TRIGGER update_status_on_rescuer_tasks_insert
+CREATE TRIGGER status_update_for_task_taking
 AFTER INSERT ON rescuer_tasks
 FOR EACH ROW
 BEGIN
@@ -104,6 +104,23 @@ BEGIN
         UPDATE requests
         SET status = 'taken'
         WHERE requestId = NEW.taskIdRef;
+    END IF;
+END;
+
+//
+
+CREATE TRIGGER status_update_for_task_cancelation
+AFTER DELETE ON rescuer_tasks
+FOR EACH ROW
+BEGIN
+    IF OLD.taskType = 'offer' THEN
+        UPDATE offers
+        SET status = 'pending'
+        WHERE offerId = OLD.taskIdRef;
+    ELSEIF OLD.taskType = 'request' THEN
+        UPDATE requests
+        SET status = 'pending'
+        WHERE requestId = OLD.taskIdRef;
     END IF;
 END;
 
@@ -184,4 +201,4 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 
 -- Insert data into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES
-('rescuer1', 'request', 1),
+('rescuer1', 'request', 1);
