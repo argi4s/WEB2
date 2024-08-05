@@ -53,13 +53,39 @@ if ($result->num_rows > 0) {
             throw new Exception('Failed to update product quantity: ' . $updateStmt->error);
         }
 
-        // Add the item to the onvehicles table
+        // Get the username from the session
         $rescuerUsername = $_SESSION['username'];
-        $insertStmt = $conn->prepare("INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES (?, ?, ?)");
-        $insertStmt->bind_param("sis", $name, $quantity, $rescuerUsername);
 
-        if (!$insertStmt->execute()) {
-            throw new Exception('Failed to insert into onvehicles: ' . $insertStmt->error);
+        // Check if the item already exists in the onvehicles table
+        $checkStmt = $conn->prepare("SELECT productQuantity FROM onvehicles WHERE productName = ? AND rescuerUsername = ?");
+        $checkStmt->bind_param("ss", $name, $rescuerUsername);
+
+        if (!$checkStmt->execute()) {
+            throw new Exception('Failed to check onvehicles table: ' . $checkStmt->error);
+        }
+
+        $checkResult = $checkStmt->get_result();
+
+        if ($checkResult->num_rows > 0) {
+            // Item already exists, update the existing row
+            $row = $checkResult->fetch_assoc();
+            $existingQuantity = $row['productQuantity'];
+            $newVehicleQuantity = $existingQuantity + $quantity;
+
+            $updateVehicleStmt = $conn->prepare("UPDATE onvehicles SET productQuantity = ? WHERE productName = ? AND rescuerUsername = ?");
+            $updateVehicleStmt->bind_param("iss", $newVehicleQuantity, $name, $rescuerUsername);
+
+            if (!$updateVehicleStmt->execute()) {
+                throw new Exception('Failed to update onvehicles: ' . $updateVehicleStmt->error);
+            }
+        } else {
+            // Item does not exist, insert a new row
+            $insertStmt = $conn->prepare("INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES (?, ?, ?)");
+            $insertStmt->bind_param("sis", $name, $quantity, $rescuerUsername);
+
+            if (!$insertStmt->execute()) {
+                throw new Exception('Failed to insert into onvehicles: ' . $insertStmt->error);
+            }
         }
 
         // Commit transaction

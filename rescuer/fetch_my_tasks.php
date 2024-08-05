@@ -87,8 +87,13 @@ function finishTask(id) {
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            alert('Task finished!');
-            location.reload(); // Reload the page to reflect the changes
+            var response = xhr.responseText;
+            if (response.includes("Task finished successfully")) {
+                alert('Task finished!');
+                location.reload(); // Reload the page to reflect the changes
+            } else {
+                alert('Error: ' + response);
+            }
         }
     };
     xhr.send("id=" + id);
