@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT productName FROM warehouse";
+$sql = "SELECT productName FROM warehouse ORDER BY productName";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {

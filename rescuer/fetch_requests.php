@@ -15,8 +15,8 @@ $sql = "SELECT r.*, c.name, c.surname, w.productName
 FROM requests r
 JOIN citizens c ON r.username = c.username
 JOIN warehouse w ON r.productId = w.productId
-WHERE r.status = 'pending';
-";
+WHERE r.status = 'pending'
+ORDER BY createdAt";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {

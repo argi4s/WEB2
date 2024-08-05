@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 $rescuerUsername = $_SESSION['username'];
 
 // Prepare the SQL statement
-$sql = "SELECT productName, productQuantity FROM onvehicles WHERE rescuerUsername = ? AND productQuantity > 0";
+$sql = "SELECT productName, productQuantity FROM onvehicles WHERE rescuerUsername = ? AND productQuantity > 0 ORDER BY productName";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $rescuerUsername);
 $stmt->execute();
