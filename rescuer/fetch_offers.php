@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT o.*, c.name, c.surname, w.productName
+$sql = "SELECT o.*, c.name, c.surname, c.phone, w.productName
 FROM offers o
 JOIN citizens c ON o.username = c.username
 JOIN warehouse w ON o.productId = w.productId
@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
         echo '<div class="tasktainer offer">
                     <div class="text">
                         <p class="bold-text">' . htmlspecialchars($row['quantity']) . ' ' . htmlspecialchars($row['productName']) . '</p>
-                        <p class="subtext">' . htmlspecialchars($row['surname']) . ' ' . htmlspecialchars($row['name']) . '</p>
+                        <p class="subtext">' . htmlspecialchars($row['surname']) . ' ' . htmlspecialchars($row['name']) . ' - ' . htmlspecialchars($row['phone']) . '</p>
                         <p class="subtext">' . htmlspecialchars($row['createdAt']) . '</p>
                     </div>
                     <div class="container" style="display: flex; justify-content: center;">

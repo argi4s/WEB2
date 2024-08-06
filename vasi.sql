@@ -137,11 +137,16 @@ INSERT INTO users (username, password, is_admin) VALUES
 ('rescuer3', 'pass3', FALSE),
 ('rescuer4', 'pass4', FALSE),
 ('rescuer5', 'pass5', FALSE),
-('citizen1', 'pass6', FALSE),
-('citizen2', 'pass7', FALSE),
-('citizen3', 'pass8', FALSE),
-('citizen4', 'pass9', FALSE),
-('citizen5', 'pass10', FALSE);
+('citizen1', 'pass1', FALSE),
+('citizen2', 'pass2', FALSE),
+('citizen3', 'pass3', FALSE),
+('citizen4', 'pass4', FALSE),
+('citizen5', 'pass5', FALSE),
+('citizen6', 'pass6', FALSE),
+('citizen7', 'pass7', FALSE),
+('citizen8', 'pass8', FALSE),
+('citizen9', 'pass9', FALSE),
+('citizen10', 'pass10', FALSE);
 
 -- Insert data into rescuers table
 INSERT INTO rescuers (username, name, surname, phone, latitude, longitude) VALUES
@@ -153,11 +158,16 @@ INSERT INTO rescuers (username, name, surname, phone, latitude, longitude) VALUE
 
 -- Insert data into citizens table
 INSERT INTO citizens (username, name, surname, phone, latitude, longitude) VALUES
-('citizen1', 'Alice', 'Johnson', '9876543210', 37.9850, 23.7280),
-('citizen2', 'Bob', 'Brown', '9876543211', 37.9851, 23.7281),
-('citizen3', 'Charlie', 'Davis', '9876543212', 37.9852, 23.7282),
-('citizen4', 'Daisy', 'Evans', '9876543213', 37.9853, 23.7283),
-('citizen5', 'Eve', 'Williams', '9876543214', 37.9854, 23.7284);
+('citizen1', 'Alice', 'Johnson', '6927345832', 37.9848, 23.7284),
+('citizen2', 'Bob', 'Brown', '6927345833', 37.9838, 23.7254),
+('citizen3', 'Charlie', 'Davis', '6927345834', 37.9860, 23.7294),
+('citizen4', 'Daisy', 'Evans', '6927345835', 37.9870, 23.7314),
+('citizen5', 'Eve', 'Williams', '6927345836', 37.9880, 23.7334),
+('citizen6', 'John', 'Poulopoulos', '6927345837', 37.9890, 23.7354),
+('citizen7', 'George', 'Iliakis', '6927345838', 37.9900, 23.7374),
+('citizen8', 'Dennis', 'Davis', '6927345839', 37.9910, 23.7394),
+('citizen9', 'Mary', 'Christians', '6927345840', 37.9920, 23.7414),
+('citizen10', 'Sofoklis', 'Toliopoulos', '6927345841', 37.9930, 23.7434);
 
 -- Insert data into warehouse table
 INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
@@ -189,7 +199,10 @@ INSERT INTO requests (username, productId, quantity, status) VALUES
 ('citizen2', 2, 20, 'pending'),
 ('citizen3', 3, 5, 'pending'),
 ('citizen4', 4, 7, 'pending'),
-('citizen5', 5, 15, 'pending');
+('citizen5', 5, 15, 'pending'),
+('citizen6', 1, 5, 'pending'),
+('citizen7', 3, 10, 'pending'),
+('citizen8', 4, 9, 'pending');
 
 -- Insert data into offers table
 INSERT INTO offers (username, productId, quantity, status) VALUES
@@ -197,7 +210,9 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 ('citizen2', 2, 10, 'pending'),
 ('citizen3', 3, 3, 'pending'),
 ('citizen4', 4, 8, 'pending'),
-('citizen5', 5, 12, 'pending');
+('citizen5', 5, 12, 'pending'),
+('citizen9', 3, 5, 'pending'),
+('citizen10', 4, 7, 'pending');
 
 -- Insert data into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES

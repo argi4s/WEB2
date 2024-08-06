@@ -24,10 +24,11 @@ check_login('rescuer');
             </div>
             
             <div class="container" style="height: auto; width: 100%; display: grid; justify-content: end; margin-top: auto;">
-                <button class="filter-btn active" id="filter1" onclick="applyFilter('filter1')">Rescuers</button>
-                <button class="filter-btn active" id="filter2" onclick="applyFilter('filter2')">Requests</button>
-                <button class="filter-btn active" id="filter3" onclick="applyFilter('filter3')">Offers</button>
-                <button class="filter-btn active" id="filter4" onclick="applyFilter('filter4')">My Tasks</button>
+                <button class="filter-btn active" id="filter1" onclick="applyFilter('filter1')">Requests</button>
+                <button class="filter-btn active" id="filter2" onclick="applyFilter('filter2')">Offers</button>
+                <button class="filter-btn active" id="filter3" onclick="applyFilter('filter3')">My Tasks</button>
+                <button class="filter-btn active" id="filter4" onclick="applyFilter('filter4')">My Routes</button>
+                <button class="filter-btn active" id="filter5" onclick="applyFilter('filter5')">Rescuers</button>
             </div>
 
             <a href="rescuer_main_page.php" class="button back" style="margin-top: auto; margin-bottom: 25px;">Back to Main Page</a>
