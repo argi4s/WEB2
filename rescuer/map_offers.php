@@ -14,11 +14,11 @@ if ($conn->connect_error) {
 }
 
 // Fetch pending requests
-$sql = "SELECT r.*, c.name, c.surname, c.phone, c.latitude, c.longitude, w.productName
-        FROM requests r
-        JOIN citizens c ON r.username = c.username
-        JOIN warehouse w ON r.productId = w.productId
-        WHERE r.status = 'pending'
+$sql = "SELECT o.*, c.name, c.surname, c.phone, c.latitude, c.longitude, w.productName
+        FROM offers o
+        JOIN citizens c ON o.username = c.username
+        JOIN warehouse w ON o.productId = w.productId
+        WHERE o.status = 'pending'
         ORDER BY createdAt";
 
 $result = $conn->query($sql);
@@ -30,7 +30,7 @@ if ($result->num_rows > 0) {
         $features[] = [
             "type" => "Feature",
             "properties" => [
-                "requestId" => $row["requestId"],
+                "offerId" => $row["offerId"],
                 "productName" => $row["productName"],
                 "quantity" => $row["quantity"],
                 "name" => $row["name"],

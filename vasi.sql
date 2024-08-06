@@ -158,16 +158,16 @@ INSERT INTO rescuers (username, name, surname, phone, latitude, longitude) VALUE
 
 -- Insert data into citizens table
 INSERT INTO citizens (username, name, surname, phone, latitude, longitude) VALUES
-('citizen1', 'Alice', 'Johnson', '6927345832', 37.9848, 23.7284),
-('citizen2', 'Bob', 'Brown', '6927345833', 37.9838, 23.7254),
-('citizen3', 'Charlie', 'Davis', '6927345834', 37.9860, 23.7294),
-('citizen4', 'Daisy', 'Evans', '6927345835', 37.9870, 23.7314),
-('citizen5', 'Eve', 'Williams', '6927345836', 37.9880, 23.7334),
-('citizen6', 'John', 'Poulopoulos', '6927345837', 37.9890, 23.7354),
-('citizen7', 'George', 'Iliakis', '6927345838', 37.9900, 23.7374),
-('citizen8', 'Dennis', 'Davis', '6927345839', 37.9910, 23.7394),
-('citizen9', 'Mary', 'Christians', '6927345840', 37.9920, 23.7414),
-('citizen10', 'Sofoklis', 'Toliopoulos', '6927345841', 37.9930, 23.7434);
+('citizen1', 'Alice', 'Johnson', '6927345832', 37.9292, 23.6894),
+('citizen2', 'Bob', 'Brown', '6927345833', 37.9357, 23.7420),
+('citizen3', 'Charlie', 'Davis', '6927345834', 37.9482, 23.7634),
+('citizen4', 'Daisy', 'Evans', '6927345835', 37.9156, 23.7567),
+('citizen5', 'Eve', 'Williams', '6927345836', 37.9641, 23.7023),
+('citizen6', 'John', 'Poulopoulos', '6927345837', 37.9773, 23.7325),
+('citizen7', 'George', 'Iliakis', '6927345838', 37.9510, 23.7214),
+('citizen8', 'Dennis', 'Davis', '6927345839', 37.9824, 23.7596),
+('citizen9', 'Mary', 'Christians', '6927345840', 37.9967, 23.7708),
+('citizen10', 'Sofoklis', 'Toliopoulos', '6927345841', 37.9105, 23.7792);
 
 -- Insert data into warehouse table
 INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES

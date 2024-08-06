@@ -7,6 +7,7 @@ var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 // Initialize layers
 var dataLayer = L.geoJSON(null);
 var filteredData1 = L.geoJSON(null); // Requests
+var filteredData2 = L.geoJSON(null); // Offers
 
 function fetchPendingRequests() {
     fetch('map_requests.php')
@@ -31,6 +32,31 @@ function fetchPendingRequests() {
             applyFilter(); // Apply the current filters after fetching data
         })
         .catch(error => console.error('Error fetching pending requests:', error));
+}
+
+function fetchPendingOffers() {
+    fetch('map_offers.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData2 = L.geoJSON(geoJsonData, {
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`<div class="tasktainer offer" style="margin: 0px; min-width: 150px; padding-right:5px;">
+                    <div class="text">
+                        <p class="bold-text">${feature.properties.quantity} ${feature.properties.productName}</p>
+                        <p class="subtext">${feature.properties.surname} ${feature.properties.name}</p>
+                        <p class="subtext">${feature.properties.phone}</p>
+                        <p class="subtext">${feature.properties.createdAt}</p>
+                    </div>
+                    <div class="container" style="display: flex; justify-content: center;">
+                        <button class="button smallgreen" onclick="takeOnOffer(${feature.properties.offerId})">Take On</button>
+                    </div>
+              </div>`);
+                }
+            });
+
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error fetching pending offers:', error));
 }
 
 function applyFilter(filterId) {
@@ -80,5 +106,7 @@ function applyFilter(filterId) {
 }
 
 fetchPendingRequests(); // Fetch pending requests initially
+
+fetchPendingOffers(); // Fetch pending offers initially
 
 dataLayer.addTo(map);
