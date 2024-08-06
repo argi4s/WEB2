@@ -25,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $pendingTasksStmt = $conn->prepare("
                 SELECT COUNT(*) as pendingTasksCount 
                 FROM rescuer_tasks rt
-                LEFT JOIN requests r ON rt.taskType = 'request' AND rt.taskIdRef = r.requestId
-                LEFT JOIN offers o ON rt.taskType = 'offer' AND rt.taskIdRef = o.offerId
+                LEFT JOIN requests r ON rt.taskType = 'request' AND rt.requestId = r.requestId
+                LEFT JOIN offers o ON rt.taskType = 'offer' AND rt.offerId = o.offerId
                 WHERE rt.rescuerUsername = ? AND COALESCE(r.status, o.status) = 'taken'");
             $pendingTasksStmt->bind_param("s", $rescuerUsername);
             $pendingTasksStmt->execute();
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $pendingTasksStmt->close();
 
             // Prepare statement to insert into rescuer_tasks
-            $stmt = $conn->prepare("INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES (?, 'offer', ?)");
+            $stmt = $conn->prepare("INSERT INTO rescuer_tasks (rescuerUsername, taskType, offerId) VALUES (?, 'offer', ?)");
             $stmt->bind_param("si", $rescuerUsername, $offerId);
 
             if ($stmt->execute()) {

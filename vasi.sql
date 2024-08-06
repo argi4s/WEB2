@@ -84,11 +84,13 @@ CREATE TABLE rescuer_tasks (
     taskId INT AUTO_INCREMENT PRIMARY KEY,
     rescuerUsername VARCHAR(25) NOT NULL,
     taskType ENUM('request', 'offer') NOT NULL,
-    taskIdRef INT NOT NULL,
+    requestId INT,
+    offerId INT,
     FOREIGN KEY (rescuerUsername) REFERENCES users(username),
-    FOREIGN KEY (taskIdRef) REFERENCES requests(requestId) ON DELETE CASCADE,
-    FOREIGN KEY (taskIdRef) REFERENCES offers(offerId) ON DELETE CASCADE
-)engine=InnoDB;
+    FOREIGN KEY (requestId) REFERENCES requests(requestId) ON DELETE CASCADE,
+    FOREIGN KEY (offerId) REFERENCES offers(offerId) ON DELETE CASCADE,
+    CHECK ((requestId IS NOT NULL AND offerId IS NULL) OR (requestId IS NULL AND offerId IS NOT NULL))
+) engine=InnoDB;
 
 DELIMITER //
 
@@ -99,11 +101,11 @@ BEGIN
     IF NEW.taskType = 'offer' THEN
         UPDATE offers
         SET status = 'taken'
-        WHERE offerId = NEW.taskIdRef;
+        WHERE offerId = NEW.offerId;
     ELSEIF NEW.taskType = 'request' THEN
         UPDATE requests
         SET status = 'taken'
-        WHERE requestId = NEW.taskIdRef;
+        WHERE requestId = NEW.requestId;
     END IF;
 END;
 
@@ -116,11 +118,11 @@ BEGIN
     IF OLD.taskType = 'offer' THEN
         UPDATE offers
         SET status = 'pending'
-        WHERE offerId = OLD.taskIdRef;
+        WHERE offerId = OLD.offerId;
     ELSEIF OLD.taskType = 'request' THEN
         UPDATE requests
         SET status = 'pending'
-        WHERE requestId = OLD.taskIdRef;
+        WHERE requestId = OLD.requestId;
     END IF;
 END;
 
@@ -214,6 +216,6 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 ('citizen9', 3, 5, 'pending'),
 ('citizen10', 4, 7, 'pending');
 
--- Insert data into rescuer_tasks table
-INSERT INTO rescuer_tasks (rescuerUsername, taskType, taskIdRef) VALUES
+-- Insert requests into rescuer_tasks table
+INSERT INTO rescuer_tasks (rescuerUsername, taskType, requestId) VALUES
 ('rescuer1', 'request', 1);

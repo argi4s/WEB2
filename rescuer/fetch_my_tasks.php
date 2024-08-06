@@ -17,7 +17,8 @@ $rescuerUsername = $_SESSION['username'];
 $sql = "
     SELECT 
         rt.taskType as taskType,
-        rt.taskIdRef,
+        rt.requestId,
+        rt.offerId,
         rt.taskId as id,
         c.name AS citizenName,
         c.surname AS citizenSurname,
@@ -27,8 +28,8 @@ $sql = "
         COALESCE(r.createdAt, o.createdAt) AS createdAt,
         COALESCE(r.status, o.status) AS status
     FROM rescuer_tasks rt
-    LEFT JOIN requests r ON rt.taskType = 'request' AND rt.taskIdRef = r.requestId
-    LEFT JOIN offers o ON rt.taskType = 'offer' AND rt.taskIdRef = o.offerId
+    LEFT JOIN requests r ON rt.taskType = 'request' AND rt.requestId = r.requestId
+    LEFT JOIN offers o ON rt.taskType = 'offer' AND rt.offerId = o.offerId
     LEFT JOIN citizens c ON (r.username = c.username OR o.username = c.username)
     LEFT JOIN warehouse w ON (r.productId = w.productId OR o.productId = w.productId)
     WHERE rt.rescuerUsername = ? AND (rt.taskType = 'request' AND r.status = 'taken' OR rt.taskType = 'offer' AND o.status = 'taken')

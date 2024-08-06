@@ -35,23 +35,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Start transaction
             $conn->begin_transaction();
 
-            // Retrieve the taskType and taskIdRef before finishing
-            $stmt = $conn->prepare("SELECT taskType, taskIdRef FROM rescuer_tasks WHERE rescuerUsername = ? AND taskId = ?");
+            // Retrieve the taskType, requestId and offerId before finishing
+            $stmt = $conn->prepare("SELECT taskType, requestId, offerId FROM rescuer_tasks WHERE rescuerUsername = ? AND taskId = ?");
             $stmt->bind_param("si", $rescuerUsername, $taskId);
             $stmt->execute();
-            $stmt->bind_result($taskType, $taskIdRef);
+            $stmt->bind_result($taskType, $requestId, $offerId);
             $stmt->fetch();
             $stmt->close();
 
             // Determine the required product and quantity from the relevant table
             if ($taskType == 'offer') {
                 $taskStmt = $conn->prepare("SELECT productId, quantity FROM offers WHERE offerId = ?");
+                $taskStmt->bind_param("i", $offerId);
             } elseif ($taskType == 'request') {
                 $taskStmt = $conn->prepare("SELECT productId, quantity FROM requests WHERE requestId = ?");
+                $taskStmt->bind_param("i", $requestId);
             } else {
                 throw new Exception("Invalid task type.");
             }
-            $taskStmt->bind_param("i", $taskIdRef);
+            
             $taskStmt->execute();
             $taskStmt->bind_result($productId, $taskQuantity);
             $taskStmt->fetch();
@@ -95,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Update the task status
                 $updateTaskStmt = $conn->prepare("UPDATE requests SET status = 'finished' WHERE requestId = ?");
-                $updateTaskStmt->bind_param("i", $taskIdRef);
+                $updateTaskStmt->bind_param("i", $requestId);
             } elseif ($taskType == 'offer') {
                 // Update the quantity on the vehicle
                 $newQuantity = $vehicleExists ? $currentQuantity + $taskQuantity : $taskQuantity;
@@ -111,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Update the task status
                 $updateTaskStmt = $conn->prepare("UPDATE offers SET status = 'finished' WHERE offerId = ?");
-                $updateTaskStmt->bind_param("i", $taskIdRef);
+                $updateTaskStmt->bind_param("i", $offerId);
             } else {
                 throw new Exception("Invalid task type.");
             }
