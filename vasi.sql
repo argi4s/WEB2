@@ -130,7 +130,7 @@ END;
 DELIMITER ;
 
 -- Insert data into base table
-INSERT INTO base (latitude, longitude) VALUES (37.9038, 23.7275);
+INSERT INTO base (latitude, longitude) VALUES (37.97199, 23.73416);
 
 -- Insert data into users table
 INSERT INTO users (username, password, is_admin) VALUES

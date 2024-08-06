@@ -9,6 +9,32 @@ var dataLayer = L.geoJSON(null);
 var filteredData1 = L.geoJSON(null); // Requests
 var filteredData2 = L.geoJSON(null); // Offers
 
+var baseIcon = L.icon({
+    iconUrl: '../baseIcon.png',
+    iconSize: [40, 40]
+});
+
+function fetchBaseCoords() {
+    fetch('get_base_coords.php')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.base && data.base.length > 0) {
+            let base = data.base[0];
+            L.marker([base.latitude, base.longitude], { icon: baseIcon }).addTo(map)
+                .bindPopup("Base Location: " + [base.latitude, base.longitude].toString());
+        } else {
+            console.error('No base data found');
+        }
+    })
+    .catch(error => console.error('Error fetching coordinates:', error));
+}
+
+
 function fetchPendingRequests() {
     fetch('map_requests.php')
         .then(response => response.json())
@@ -105,8 +131,8 @@ function applyFilter(filterId) {
     }
 }
 
+fetchBaseCoords();
 fetchPendingRequests(); // Fetch pending requests initially
-
 fetchPendingOffers(); // Fetch pending offers initially
 
 dataLayer.addTo(map);
