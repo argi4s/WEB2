@@ -39,14 +39,14 @@ body {
     background-color: orange;
 }
 .button.green {
-    background-color: lightgreen;
+    background-color: #30dd0e;
 }
 .button.smallgreen{
     width: 50%;
     padding: 5%;
     margin: 3%;
     font-size: 10px;
-    background-color: greenyellow;
+    background-color: #30dd0e;
 }
 .button.smallred{
     width: 50%;
@@ -91,10 +91,10 @@ body {
     border-radius: 5px;
 }
 .tasktainer.request {
-    background-color: violet;
+    background-color: #0597d8;
 }
 .tasktainer.offer {
-    background-color: lightskyblue;
+    background-color: #d9cf0b;
 }
 .form-container {
     width: 410px;
@@ -180,7 +180,7 @@ body {
     margin-top: 7px;
 }
 .filter-btn.active {
-    background-color: greenyellow;
+    background-color: #30dd0e;
     color: white;
 }
 .text-button {

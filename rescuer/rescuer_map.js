@@ -11,6 +11,31 @@ var filteredData2 = L.geoJSON(null); // Offers
 
 var baseMarker; // Variable to hold the base marker
 
+// Different marker icons
+var requestIcon = L.icon({
+    iconUrl: '../requestIcon.png', // Path to your request icon
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var offerIcon = L.icon({
+    iconUrl: '../offerIcon.png', // Path to your offer icon
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var combinedIcon = L.icon({
+    iconUrl: '../combinedIcon.png', // Path to your combined icon
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 var baseIcon = L.icon({
     iconUrl: '../baseIcon.png',
     iconSize: [40, 40],
