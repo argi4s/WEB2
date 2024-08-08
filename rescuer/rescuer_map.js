@@ -9,31 +9,51 @@ var dataLayer = L.geoJSON(null);
 var filteredData1 = L.geoJSON(null); // Requests
 var filteredData2 = L.geoJSON(null); // Offers
 
+var baseMarker; // Variable to hold the base marker
+
 var baseIcon = L.icon({
     iconUrl: '../baseIcon.png',
-    iconSize: [40, 40]
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
 });
 
 function fetchBaseCoords() {
+    console.log('Fetching base coordinates...');
     fetch('get_base_coords.php')
     .then(response => {
         if (!response.ok) {
+            console.error('Network response was not ok');
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
+        console.log('Data received:', data);
         if (data.base && data.base.length > 0) {
             let base = data.base[0];
-            L.marker([base.latitude, base.longitude], { icon: baseIcon }).addTo(map)
+            console.log('Adding marker at:', base.latitude, base.longitude);
+
+            // Remove the existing base marker if it exists
+            if (baseMarker) {
+                map.removeLayer(baseMarker);
+            }
+
+            // Create the base marker
+            baseMarker = L.marker([base.latitude, base.longitude], { icon: baseIcon }).addTo(map)
                 .bindPopup("Base Location: " + [base.latitude, base.longitude].toString());
+
+            // Set the map view to the marker location
+            map.setView([base.latitude, base.longitude], 13);
+
+            console.log('Base marker added to the map');
         } else {
             console.error('No base data found');
         }
     })
     .catch(error => console.error('Error fetching coordinates:', error));
 }
-
 
 function fetchPendingRequests() {
     fetch('map_requests.php')
@@ -55,6 +75,7 @@ function fetchPendingRequests() {
                 }
             });
 
+            console.log('Pending requests fetched');
             applyFilter(); // Apply the current filters after fetching data
         })
         .catch(error => console.error('Error fetching pending requests:', error));
@@ -80,6 +101,7 @@ function fetchPendingOffers() {
                 }
             });
 
+            console.log('Pending offers fetched');
             applyFilter(); // Apply the current filters after fetching data
         })
         .catch(error => console.error('Error fetching pending offers:', error));
@@ -89,6 +111,7 @@ function applyFilter(filterId) {
     if (filterId) {
         var filterButton = document.getElementById(filterId);
         filterButton.classList.toggle('active');
+        console.log(`Filter ${filterId} toggled to ${filterButton.classList.contains('active') ? 'active' : 'inactive'}`);
     }
 
     var activeFilters = [];
@@ -97,42 +120,52 @@ function applyFilter(filterId) {
             activeFilters.push('filter' + i);
         }
     }
+    console.log('Active filters:', activeFilters);
 
     map.eachLayer(function (layer) {
-        if (layer !== baseLayer) {
+        if (layer !== baseLayer && layer !== baseMarker) {
+            console.log('Removing layer:', layer);
             map.removeLayer(layer);
         }
     });
 
     baseLayer.addTo(map);
+    console.log('Base layer added to map');
 
+    // Add filtered data layers based on active filters
     if (activeFilters.length > 0) {
         activeFilters.forEach(function (filter) {
             switch (filter) {
                 case 'filter1':
                     filteredData1.addTo(map);
+                    console.log('Adding filteredData1 to map');
                     break;
                 case 'filter2':
                     filteredData2.addTo(map);
+                    console.log('Adding filteredData2 to map');
                     break;
-                case 'filter3':
-                    filteredData3.addTo(map);
-                    break;
-                case 'filter4':
-                    filteredData4.addTo(map);
-                    break;
-                case 'filter5':
-                    filteredData5.addTo(map);
-                    break;
+                default:
+                    console.log('No matching filter found for', filter);
             }
         });
     } else {
         dataLayer.addTo(map);
+        console.log('Adding dataLayer to map');
+    }
+
+    // Ensure the base marker is always added to the map
+    if (baseMarker) {
+        baseMarker.addTo(map);
+        console.log('Base marker added to map in applyFilter');
     }
 }
 
-fetchBaseCoords();
-fetchPendingRequests(); // Fetch pending requests initially
-fetchPendingOffers(); // Fetch pending offers initially
 
-dataLayer.addTo(map);
+function initializeMap(){
+    fetchBaseCoords();
+    fetchPendingRequests(); // Fetch pending requests initially
+    fetchPendingOffers(); // Fetch pending offers initially
+    dataLayer.addTo(map);
+}
+
+initializeMap();
