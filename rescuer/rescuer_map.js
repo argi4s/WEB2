@@ -8,6 +8,7 @@ var baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 var dataLayer = L.geoJSON(null);
 var filteredData1 = L.geoJSON(null); // Requests
 var filteredData2 = L.geoJSON(null); // Offers
+var filteredData3 = L.geoJSON(null); // My tasks
 
 var baseMarker; // Variable to hold the base marker
 
@@ -132,6 +133,33 @@ function fetchPendingOffers() {
         .catch(error => console.error('Error fetching pending offers:', error));
 }
 
+function fetchMyTasks() {
+    fetch('map_tasks.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData3 = L.geoJSON(geoJsonData, {
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`<div class="tasktainer ${feature.properties.taskType}" style="margin: 0px; min-width: 150px; padding-right:5px;">
+                    <div class="text">
+                        <p class="bold-text">${feature.properties.quantity} ${feature.properties.productName}</p>
+                        <p class="subtext">${feature.properties.surname} ${feature.properties.name}</p>
+                        <p class="subtext">${feature.properties.phone}</p>
+                        <p class="subtext">${feature.properties.createdAt}</p>
+                    </div>
+                    <div class="container" style="display: flex; justify-content: center;">
+                        <a class="button smallred" onclick="cancelTask(${feature.properties.id})">Cancel</a>
+                        <a class="button smallgreen" onclick="finishTask(${feature.properties.id})">Finish</a>
+                    </div>
+              </div>`);
+                }
+            });
+
+            console.log('Active tasks fetched');
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error fetching active tasks:', error));
+}
+
 function applyFilter(filterId) {
     if (filterId) {
         var filterButton = document.getElementById(filterId);
@@ -140,7 +168,7 @@ function applyFilter(filterId) {
     }
 
     var activeFilters = [];
-    for (var i = 1; i <= 5; i++) {
+    for (var i = 1; i <= 3; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
         }
@@ -169,6 +197,10 @@ function applyFilter(filterId) {
                     filteredData2.addTo(map);
                     console.log('Adding filteredData2 to map');
                     break;
+                case 'filter3':
+                    filteredData3.addTo(map);
+                    console.log('Adding filteredData3 to map');
+                    break;
                 default:
                     console.log('No matching filter found for', filter);
             }
@@ -190,6 +222,7 @@ function initializeMap(){
     fetchBaseCoords();
     fetchPendingRequests(); // Fetch pending requests initially
     fetchPendingOffers(); // Fetch pending offers initially
+    fetchMyTasks(); // Fetch my tasks
     dataLayer.addTo(map);
 }
 
