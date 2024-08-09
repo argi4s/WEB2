@@ -41,35 +41,37 @@ check_login('rescuer');
             const name = document.getElementById('name').value;
             const quantity = document.getElementById('quantity').value;
 
+            console.log('Form element:', document.getElementById('addItemForm'));
+
             try {
-                const response = await fetch('add_item.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name, quantity })
-                });
+            const response = await fetch('add_item.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, quantity })
+            });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+            if (!response.ok) {
+                console.error('Fetch error:', response.status, response.statusText);
+                throw new Error('Network response was not ok');
+            }
 
-                const result = await response.json();
+            const result = await response.json();
 
-                if (result.success) {
-                    // Handle the success case
-                    alert('Item added successfully.');
-                    // Optionally reset the form
-                    document.getElementById('addItemForm').reset();
-        } else {
-            alert('Item addition failed: ' + result.message);
+            if (result.success) {
+                alert('Item added successfully.');
+                console.log('Resetting form...');
+                document.getElementById('addItemForm').reset();  // Reset the form
+            } else {
+                alert('Item addition failed: ' + result.message);
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            alert('An error occurred. Please try again.');
         }
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        alert('An error occurred. Please try again.');
-    }
-
         });
+
     </script>
 </body>
 </html>

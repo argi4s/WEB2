@@ -60,7 +60,8 @@ if ($result->num_rows > 0) {
                 "surname" => $row["citizenSurname"],
                 "phone" => $row["citizenPhone"],
                 "createdAt" => $row["createdAt"],
-                "status" => $row["status"]
+                "status" => $row["status"],
+                "taskType" => $row["taskType"]
             ],
             "geometry" => [
                 "type" => "Point",

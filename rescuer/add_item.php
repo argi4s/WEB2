@@ -10,6 +10,7 @@ $dbname = "vasi";
 $input = json_decode(file_get_contents('php://input'), true);
 $name = $input['name'];
 $quantity = $input['quantity'];
+$rescuerUsername = $_SESSION['username'];
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -17,6 +18,61 @@ if ($conn->connect_error) {
     error_log('Database connection failed: ' . $conn->connect_error);
     die(json_encode(['success' => false, 'message' => 'Database connection failed']));
 }
+
+// Retrieve rescuer's coordinates
+$rescuerStmt = $conn->prepare("SELECT latitude, longitude FROM rescuers WHERE username = ?");
+$rescuerStmt->bind_param("s", $rescuerUsername);
+$rescuerStmt->execute();
+$rescuerResult = $rescuerStmt->get_result();
+
+if ($rescuerResult->num_rows > 0) {
+    $rescuerRow = $rescuerResult->fetch_assoc();
+    $rescuerLatitude = $rescuerRow['latitude'];
+    $rescuerLongitude = $rescuerRow['longitude'];
+} else {
+    echo json_encode(['success' => false, 'message' => 'Rescuer location not found']);
+    exit;
+}
+
+// Retrieve warehouse coordinates
+$warehouseStmt = $conn->prepare("SELECT latitude, longitude FROM base LIMIT 1");
+$warehouseStmt->execute();
+$warehouseResult = $warehouseStmt->get_result();
+
+if ($warehouseResult->num_rows > 0) {
+    $warehouseRow = $warehouseResult->fetch_assoc();
+    $warehouseLatitude = $warehouseRow['latitude'];
+    $warehouseLongitude = $warehouseRow['longitude'];
+} else {
+    echo json_encode(['success' => false, 'message' => 'Warehouse location not found']);
+    exit;
+}
+
+function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000) {
+    // Convert from degrees to radians
+    $latFrom = deg2rad($latitudeFrom);
+    $lonFrom = deg2rad($longitudeFrom);
+    $latTo = deg2rad($latitudeTo);
+    $lonTo = deg2rad($longitudeTo);
+
+    $latDelta = $latTo - $latFrom;
+    $lonDelta = $lonTo - $lonFrom;
+
+    $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+    return $angle * $earthRadius;
+}
+
+// Calculate the distance between rescuer and warehouse
+$distance = haversineGreatCircleDistance($rescuerLatitude, $rescuerLongitude, $warehouseLatitude, $warehouseLongitude);
+
+if ($distance > 100) {
+    echo json_encode(['success' => false, 'message' => 'Rescuer is too far from the warehouse']);
+    exit;
+}
+
+// Proceed with the original transaction logic
 
 // Retrieve the product quantity from the warehouse table
 $stmt = $conn->prepare("SELECT productQuantity FROM warehouse WHERE productName = ?");

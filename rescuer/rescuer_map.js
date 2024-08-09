@@ -29,9 +29,17 @@ var offerIcon = L.icon({
     shadowSize: [41, 41]
 });
 
-var combinedIcon = L.icon({
-    iconUrl: '../combinedIcon.png', // Path to your combined icon
-    iconSize: [40, 40],
+var myRequestIcon = L.icon({
+    iconUrl: '../myRequestIcon.png', // Path to your request icon
+    iconSize: [60, 60],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var myOfferIcon = L.icon({
+    iconUrl: '../myOfferIcon.png', // Path to your offer icon
+    iconSize: [60, 60],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
@@ -86,6 +94,10 @@ function fetchPendingRequests() {
         .then(response => response.json())
         .then(geoJsonData => {
             filteredData1 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: requestIcon });
+                },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`<div class="tasktainer request" style="margin: 0px; min-width: 150px; padding-right:5px;">
                     <div class="text">
@@ -112,6 +124,10 @@ function fetchPendingOffers() {
         .then(response => response.json())
         .then(geoJsonData => {
             filteredData2 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: offerIcon });
+                },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`<div class="tasktainer offer" style="margin: 0px; min-width: 150px; padding-right:5px;">
                     <div class="text">
@@ -138,8 +154,20 @@ function fetchMyTasks() {
         .then(response => response.json())
         .then(geoJsonData => {
             filteredData3 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    let icon;
+
+                    // Choose icon based on taskType
+                    if (feature.properties.taskType === 'offer') {
+                        icon = myOfferIcon;
+                    } else if (feature.properties.taskType === 'request') {
+                        icon = myRequestIcon;
+                    }
+
+                    return L.marker(latlng, { icon: icon });
+                },
                 onEachFeature: function (feature, layer) {
-                    layer.bindPopup(`<div class="tasktainer ${feature.properties.taskType}" style="margin: 0px; min-width: 150px; padding-right:5px;">
+                    layer.bindPopup(`<div class="tasktainer ${feature.properties.taskType}" style="margin: 0px; min-width: 150px;">
                     <div class="text">
                         <p class="bold-text">${feature.properties.quantity} ${feature.properties.productName}</p>
                         <p class="subtext">${feature.properties.surname} ${feature.properties.name}</p>
@@ -147,8 +175,8 @@ function fetchMyTasks() {
                         <p class="subtext">${feature.properties.createdAt}</p>
                     </div>
                     <div class="container" style="display: flex; justify-content: center;">
-                        <a class="button smallred" onclick="cancelTask(${feature.properties.id})">Cancel</a>
-                        <a class="button smallgreen" onclick="finishTask(${feature.properties.id})">Finish</a>
+                        <a class="button smallred" onclick="cancelTask(${feature.properties.id})" style="color: white;">Cancel</a>
+                        <a class="button smallgreen" onclick="finishTask(${feature.properties.id})" style="color: white;">Finish</a>
                     </div>
               </div>`);
                 }

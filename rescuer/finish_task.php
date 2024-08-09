@@ -45,19 +45,75 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Determine the required product and quantity from the relevant table
             if ($taskType == 'offer') {
-                $taskStmt = $conn->prepare("SELECT productId, quantity FROM offers WHERE offerId = ?");
+                $taskStmt = $conn->prepare("SELECT productId, quantity, username FROM offers WHERE offerId = ?");
                 $taskStmt->bind_param("i", $offerId);
             } elseif ($taskType == 'request') {
-                $taskStmt = $conn->prepare("SELECT productId, quantity FROM requests WHERE requestId = ?");
+                $taskStmt = $conn->prepare("SELECT productId, quantity, username FROM requests WHERE requestId = ?");
                 $taskStmt->bind_param("i", $requestId);
             } else {
                 throw new Exception("Invalid task type.");
             }
-            
+
             $taskStmt->execute();
-            $taskStmt->bind_result($productId, $taskQuantity);
+            $taskStmt->bind_result($productId, $taskQuantity, $username);
             $taskStmt->fetch();
             $taskStmt->close();
+
+            // Retrieve rescuer's coordinates
+            $rescuerStmt = $conn->prepare("SELECT latitude, longitude FROM rescuers WHERE username = ?");
+            $rescuerStmt->bind_param("s", $rescuerUsername);
+            $rescuerStmt->execute();
+            $rescuerResult = $rescuerStmt->get_result();
+
+            if ($rescuerResult->num_rows > 0) {
+                $rescuerRow = $rescuerResult->fetch_assoc();
+                $rescuerLatitude = $rescuerRow['latitude'];
+                $rescuerLongitude = $rescuerRow['longitude'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Rescuer location not found']);
+                exit;
+            }
+
+            // Retrieve citizens coordinates
+            $citizenStmt = $conn->prepare("SELECT latitude, longitude FROM citizens WHERE username = ?");
+            $citizenStmt->bind_param("s", $username);
+            $citizenStmt->execute();
+            $citizenResult = $citizenStmt->get_result();
+
+            if ($citizenResult->num_rows > 0) {
+                $citizenRow = $citizenResult->fetch_assoc();
+                $citizenLatitude = $citizenRow['latitude'];
+                $citizenLongitude = $citizenRow['longitude'];
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Citizen location not found']);
+                exit;
+            }
+
+            function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371000) {
+                // Convert from degrees to radians
+                $latFrom = deg2rad($latitudeFrom);
+                $lonFrom = deg2rad($longitudeFrom);
+                $latTo = deg2rad($latitudeTo);
+                $lonTo = deg2rad($longitudeTo);
+
+                $latDelta = $latTo - $latFrom;
+                $lonDelta = $lonTo - $lonFrom;
+
+                $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+                        cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+                return $angle * $earthRadius;
+            }
+
+            // Calculate the distance between rescuer and citizen
+            $distance = haversineGreatCircleDistance($rescuerLatitude, $rescuerLongitude, $citizenLatitude, $citizenLongitude);
+
+            if ($distance > 50) {
+                echo json_encode(['success' => false, 'message' => 'Rescuer is too far from the citizen']);
+                exit;
+            }
+
+            // Proceed with the original transaction logic
 
             // Fetch the product name from the warehouse table using productId
             $productStmt = $conn->prepare("SELECT productName FROM warehouse WHERE productId = ?");
