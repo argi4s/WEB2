@@ -12,6 +12,7 @@ var filteredData3 = L.geoJSON(null); // My tasks
 var filteredData4 = L.geoJSON(null); // Rescuers
 
 var baseMarker; // Variable to hold the base marker
+var selfMarker; // Global variable to store self marker
 
 // Different marker icons
 var requestIcon = L.icon({
@@ -62,6 +63,14 @@ var rescuerIcon = L.icon({
     shadowSize: [41, 41]
 });
 
+var selfIcon = L.icon({
+    iconUrl: '../selfIcon.png',
+    iconSize: [60, 60],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 function fetchBaseCoords() {
     console.log('Fetching base coordinates...');
     fetch('get_base_coords.php')
@@ -96,6 +105,43 @@ function fetchBaseCoords() {
         }
     })
     .catch(error => console.error('Error fetching coordinates:', error));
+}
+
+function fetchSelfPosition() {
+    fetch('fetch_self_position.php')
+        .then(response => response.json())
+        .then(data => {
+            const { latitude, longitude } = data;
+
+            // Add a draggable marker for self
+            selfMarker = L.marker([latitude, longitude], { icon: selfIcon, draggable: true }).addTo(map);
+
+            // Listen for dragend event to update self position
+            selfMarker.on('dragend', function (event) {
+                const newPosition = event.target.getLatLng();
+                updateSelfPosition(newPosition.lat, newPosition.lng);
+            });
+        })
+        .catch(error => console.error('Error fetching self position:', error));
+}
+
+function updateSelfPosition(lat, lng) {
+    fetch('update_self_position.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ latitude: lat, longitude: lng })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Self position updated successfully.');
+        } else {
+            alert('Failed to update self position: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error updating self position:', error));
 }
 
 function fetchPendingRequests() {
@@ -280,11 +326,18 @@ function applyFilter(filterId) {
         baseMarker.addTo(map);
         console.log('Base marker added to map in applyFilter');
     }
+
+    if (selfMarker) {
+        selfMarker.addTo(map);
+        console.log('Self marker added to map in applyFilter');
+    }
 }
 
 
 function initializeMap(){
     fetchBaseCoords();
+    // Call the function to fetch self position when the map is initialized
+    fetchSelfPosition();
     fetchPendingRequests(); // Fetch pending requests initially
     fetchPendingOffers(); // Fetch pending offers initially
     fetchMyTasks(); // Fetch my tasks
