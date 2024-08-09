@@ -150,13 +150,13 @@ INSERT INTO users (username, password, is_admin) VALUES
 ('citizen9', 'pass9', FALSE),
 ('citizen10', 'pass10', FALSE);
 
--- Insert data into rescuers table
+-- Insert data into rescuers table with random coordinates near Athens, Greece
 INSERT INTO rescuers (username, name, surname, phone, latitude, longitude) VALUES
-('rescuer1', 'John', 'Doe', '1234567890', 37.9838, 23.7275),
-('rescuer2', 'Jane', 'Smith', '1234567891', 37.9839, 23.7276),
-('rescuer3', 'Jim', 'Beam', '1234567892', 37.9840, 23.7277),
-('rescuer4', 'Jack', 'Daniels', '1234567893', 37.9841, 23.7278),
-('rescuer5', 'Johnny', 'Walker', '1234567894', 37.9842, 23.7279);
+('rescuer1', 'John', 'Doe', '1234567890', 37.9812, 23.7253),
+('rescuer2', 'Jane', 'Smith', '1234567891', 37.9867, 23.7301),
+('rescuer3', 'Jim', 'Beam', '1234567892', 37.9192, 23.6994),
+('rescuer4', 'Jack', 'Daniels', '1234567893', 37.9257, 23.7480),
+('rescuer5', 'Johnny', 'Walker', '1234567894', 37.9804, 23.7400);
 
 -- Insert data into citizens table
 INSERT INTO citizens (username, name, surname, phone, latitude, longitude) VALUES
@@ -197,24 +197,19 @@ INSERT INTO announcements (announcementTitle, announcementText) VALUES
 
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
-('citizen1', 1, 10, 'taken'),
-('citizen2', 2, 20, 'pending'),
+('citizen1', 1, 2, 'taken'),
+('citizen2', 2, 3, 'pending'),
 ('citizen3', 3, 5, 'pending'),
 ('citizen4', 4, 7, 'pending'),
-('citizen5', 5, 15, 'pending'),
-('citizen6', 1, 5, 'pending'),
-('citizen7', 3, 10, 'pending'),
-('citizen8', 4, 9, 'pending');
+('citizen5', 5, 6, 'pending');
 
 -- Insert data into offers table
 INSERT INTO offers (username, productId, quantity, status) VALUES
-('citizen1', 1, 5, 'pending'),
-('citizen2', 2, 10, 'pending'),
-('citizen3', 3, 3, 'pending'),
-('citizen4', 4, 8, 'pending'),
-('citizen5', 5, 12, 'pending'),
-('citizen9', 3, 5, 'pending'),
-('citizen10', 4, 7, 'pending');
+('citizen6', 1, 7, 'pending'),
+('citizen7', 2, 12, 'pending'),
+('citizen8', 3, 12, 'pending'),
+('citizen9', 4, 9, 'pending'),
+('citizen10', 5, 11, 'pending');
 
 -- Insert requests into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, requestId) VALUES

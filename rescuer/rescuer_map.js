@@ -9,6 +9,7 @@ var dataLayer = L.geoJSON(null);
 var filteredData1 = L.geoJSON(null); // Requests
 var filteredData2 = L.geoJSON(null); // Offers
 var filteredData3 = L.geoJSON(null); // My tasks
+var filteredData4 = L.geoJSON(null); // Rescuers
 
 var baseMarker; // Variable to hold the base marker
 
@@ -47,6 +48,14 @@ var myOfferIcon = L.icon({
 
 var baseIcon = L.icon({
     iconUrl: '../baseIcon.png',
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var rescuerIcon = L.icon({
+    iconUrl: '../rescuerIcon.png',
     iconSize: [40, 40],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -188,6 +197,30 @@ function fetchMyTasks() {
         .catch(error => console.error('Error fetching active tasks:', error));
 }
 
+function fetchRescuers() {
+    fetch('map_rescuers.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData4 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: rescuerIcon });
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`<div class="tasktainer">
+                        <div class="text" style="text-align: center; padding: 16px;">
+                            <p>Vehicle's name: ${feature.properties.username}</p>
+                        </div>
+                    </div>`);
+                }
+            });
+
+            console.log('Rescuer vehicles fetched');
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error fetching rescuer vehicles:', error));
+}
+
 function applyFilter(filterId) {
     if (filterId) {
         var filterButton = document.getElementById(filterId);
@@ -196,7 +229,7 @@ function applyFilter(filterId) {
     }
 
     var activeFilters = [];
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= 4; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
         }
@@ -229,6 +262,10 @@ function applyFilter(filterId) {
                     filteredData3.addTo(map);
                     console.log('Adding filteredData3 to map');
                     break;
+                case 'filter4':
+                    filteredData4.addTo(map);
+                    console.log('Adding filteredData4 to map');
+                    break;
                 default:
                     console.log('No matching filter found for', filter);
             }
@@ -251,6 +288,7 @@ function initializeMap(){
     fetchPendingRequests(); // Fetch pending requests initially
     fetchPendingOffers(); // Fetch pending offers initially
     fetchMyTasks(); // Fetch my tasks
+    fetchRescuers(); // Fetch other rescuers
     dataLayer.addTo(map);
 }
 
