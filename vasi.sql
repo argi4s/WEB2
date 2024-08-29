@@ -92,6 +92,18 @@ CREATE TABLE rescuer_tasks (
     CHECK ((requestId IS NOT NULL AND offerId IS NULL) OR (requestId IS NULL AND offerId IS NOT NULL))
 ) engine=InnoDB;
 
+CREATE TABLE citizen_requests(
+    citizenRequestId INT AUTO_INCREMENT  PRIMARY KEY,
+    citizenUsername VARCHAR (25) NOT NULL,
+    requestProductName VARCHAR (25)  NOT NULL,
+    citizenProductCategory ENUM ('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') NOT NULL,
+    acceptDate DATETIME ,
+    completeDate DATETIME ,
+    requestPeopleQuantity INT NOT NULL,
+    requestProductQuantity INT,
+    FOREIGN KEY (citizenUsername) REFERENCES citizens(username)
+)engine=InnoDB;
+
 DELIMITER //
 
 CREATE TRIGGER status_update_for_task_taking
@@ -214,3 +226,14 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 -- Insert requests into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, requestId) VALUES
 ('rescuer1', 'request', 1);
+
+-- Insert requests into citizen_requests table
+INSERT INTO citizen_requests(citizenUsername,requestProductName,
+requestProductQuantity,requestPeopleQuantity,acceptDate,completeDate) VALUES
+('citizen1','apples',3,3,'2024-03-11 22:10:05',0);
+
+ALTER TABLE citizen_requests
+MODIFY requestProductQuantity INT DEFAULT 0,  -- Allow 0 as a valid value
+MODIFY citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') DEFAULT NULL,  -- Allow NULL
+MODIFY acceptDate DATETIME DEFAULT NULL,  -- Default to 'zero' date
+MODIFY completeDate DATETIME DEFAULT NULL;  -- Default to 'zero' date

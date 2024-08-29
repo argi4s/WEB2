@@ -1,3 +1,9 @@
+<?php
+require_once '../session_check.php';
+check_login('citizen');
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,14 +48,13 @@
 
 <body>
     <div class="container">
-        <a href="citizen_request.html" class="button">Request Goods</a>
+        <a href="citizen_request.php" class="button">Request Goods</a>
         
-        <a href="citizen_announcement_offers.html" class="button yellow">Offers Announcement</a>
+        <a href="citizen_announcement_offers.php" class="button yellow">Offers Announcement</a>
         
-        <a href="citizen_previews_pending_offers.html" class="button yellow">Previews/Pending Offers</a>
-        
-        <a href="login.html" class="button logout">Log out</a>
+        <a href="citizen_previews_pending_offers.php" class="button yellow">Previews/Pending Offers</a>
 
+        <a href="../logout.php" class="button logout">Log out</a>
     </div>
 </body>
 </html>

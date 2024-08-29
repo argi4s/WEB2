@@ -1,3 +1,8 @@
+<?php
+session_start();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +12,6 @@
 </head>
 
 <body>
-    <h1>Previews/Pending Offers</h1>
-    <a href="citizen_main_page.html" class="button" style="position:absolute;bottom:0%;">Go Back</a>
+    <h1>Announcements</h1>
+    <a href="citizen_main_page.php" class="button" style="position:absolute;bottom:0%;">Go Back</a>
 </body>
