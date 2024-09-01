@@ -146,12 +146,8 @@ BEGIN
             SET NEW.acceptDate = NOW();
         ELSEIF NEW.status = 'pending' THEN
             SET NEW.acceptDate = NULL;
-        END IF;
-
-        IF NEW.status = 'finished' THEN
+        ELSEIF NEW.status = 'finished' THEN
             SET NEW.completeDate = NOW();
-        ELSEIF OLD.status = 'finished' AND NEW.status <> 'finished' THEN
-            SET NEW.completeDate = NULL;
         END IF;
     END IF;
 END 
@@ -167,12 +163,8 @@ BEGIN
             SET NEW.acceptDate = NOW();
         ELSEIF NEW.status = 'pending' THEN
             SET NEW.acceptDate = NULL;
-        END IF;
-
-        IF NEW.status = 'finished' THEN
+        ELSEIF NEW.status = 'finished' THEN
             SET NEW.completeDate = NOW();
-        ELSEIF OLD.status = 'finished' AND NEW.status <> 'finished' THEN
-            SET NEW.completeDate = NULL;
         END IF;
     END IF;
 END 
