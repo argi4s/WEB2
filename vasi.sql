@@ -68,8 +68,6 @@ CREATE TABLE requests (
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
     acceptDate DATETIME DEFAULT NULL,
     completeDate DATETIME DEFAULT NULL,
-    citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') ,
-    requestProductName VARCHAR(25) ,
     numberOfPeople INT NOT NULL,
     FOREIGN KEY (username) REFERENCES citizens(username) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (productId) REFERENCES warehouse(productId) ON DELETE CASCADE ON UPDATE CASCADE
@@ -83,6 +81,9 @@ CREATE TABLE offers (
     quantity INT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
+    acceptDate DATETIME DEFAULT NULL,
+    completeDate DATETIME DEFAULT NULL,
+    numberOfPeople INT NOT NULL,
     FOREIGN KEY (username) REFERENCES citizens(username),
     FOREIGN KEY (productId) REFERENCES warehouse(productId)
 )engine=InnoDB;
@@ -135,6 +136,49 @@ BEGIN
 END;
 
 //
+
+CREATE TRIGGER requests_status_change
+BEFORE UPDATE ON requests
+FOR EACH ROW
+BEGIN
+    IF NEW.status <> OLD.status THEN
+        IF NEW.status = 'taken' THEN
+            SET NEW.acceptDate = NOW();
+        ELSEIF NEW.status = 'pending' THEN
+            SET NEW.acceptDate = NULL;
+        END IF;
+
+        IF NEW.status = 'finished' THEN
+            SET NEW.completeDate = NOW();
+        ELSEIF OLD.status = 'finished' AND NEW.status <> 'finished' THEN
+            SET NEW.completeDate = NULL;
+        END IF;
+    END IF;
+END 
+
+//
+
+CREATE TRIGGER offers_status_change
+BEFORE UPDATE ON offers
+FOR EACH ROW
+BEGIN
+    IF NEW.status <> OLD.status THEN
+        IF NEW.status = 'taken' THEN
+            SET NEW.acceptDate = NOW();
+        ELSEIF NEW.status = 'pending' THEN
+            SET NEW.acceptDate = NULL;
+        END IF;
+
+        IF NEW.status = 'finished' THEN
+            SET NEW.completeDate = NOW();
+        ELSEIF OLD.status = 'finished' AND NEW.status <> 'finished' THEN
+            SET NEW.completeDate = NULL;
+        END IF;
+    END IF;
+END 
+
+//
+
 DELIMITER ;
 
 -- Insert data into base table
