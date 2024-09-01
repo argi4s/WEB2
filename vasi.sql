@@ -232,6 +232,9 @@ INSERT INTO citizen_requests(citizenUsername,requestProductName,
 requestProductQuantity,requestPeopleQuantity,acceptDate,completeDate) VALUES
 ('citizen1','apples',3,3,'2024-03-11 22:10:05',0);
 
+INSERT INTO users (username, password, is_admin) 
+VALUES ('admin1', 'pass1', 1);
+
 ALTER TABLE citizen_requests
 MODIFY requestProductQuantity INT DEFAULT 0,  -- Allow 0 as a valid value
 MODIFY citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') DEFAULT NULL,  -- Allow NULL
