@@ -13,9 +13,11 @@ if (mysqli_connect_errno()) {
     die("Connection error: " . mysqli_connect_error());
 }
 
+$loggedInUser = $_SESSION['username'];
+
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $citizenUsername = 'citizen1'; // Replace with session username or dynamically
+    $citizenUsername = $_POST['citizenUsername'];
     $requestProductName = $_POST['Product'];
     $requestProductQuantity = isset($_POST['Quantity']) ? (int)$_POST['Quantity'] : 0;
     $requestPeopleQuantity = (int)$_POST['PeopleQuantity'];
