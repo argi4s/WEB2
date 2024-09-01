@@ -37,11 +37,12 @@ CREATE TABLE base (
 ) ENGINE=InnoDB;
 
 CREATE TABLE warehouse (
-	productId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    productId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     productName VARCHAR(25) UNIQUE NOT NULL,
     productCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') NOT NULL,
-    productQuantity INT NOT NULL
-)engine=InnoDB;
+    productQuantity INT NOT NULL DEFAULT 1
+) ENGINE=InnoDB;
+
 
 CREATE TABLE onvehicles (
     productName VARCHAR(25) NOT NULL,
@@ -65,9 +66,15 @@ CREATE TABLE requests (
     quantity INT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
-    FOREIGN KEY (username) REFERENCES citizens(username),
-    FOREIGN KEY (productId) REFERENCES warehouse(productId)
-)engine=InnoDB;
+    acceptDate DATETIME DEFAULT NULL,
+    completeDate DATETIME DEFAULT NULL,
+    citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') ,
+    requestProductName VARCHAR(25) ,
+    numberOfPeople INT NOT NULL,
+    FOREIGN KEY (username) REFERENCES citizens(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (productId) REFERENCES warehouse(productId) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
 
 CREATE TABLE offers (
     offerId INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,17 +99,6 @@ CREATE TABLE rescuer_tasks (
     CHECK ((requestId IS NOT NULL AND offerId IS NULL) OR (requestId IS NULL AND offerId IS NOT NULL))
 ) engine=InnoDB;
 
-CREATE TABLE citizen_requests(
-    citizenRequestId INT AUTO_INCREMENT  PRIMARY KEY,
-    citizenUsername VARCHAR (25) NOT NULL,
-    requestProductName VARCHAR (25)  NOT NULL,
-    citizenProductCategory ENUM ('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') NOT NULL,
-    acceptDate DATETIME ,
-    completeDate DATETIME ,
-    requestPeopleQuantity INT NOT NULL,
-    requestProductQuantity INT,
-    FOREIGN KEY (citizenUsername) REFERENCES citizens(username)
-)engine=InnoDB;
 
 DELIMITER //
 
@@ -227,16 +223,13 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, requestId) VALUES
 ('rescuer1', 'request', 1);
 
--- Insert requests into citizen_requests table
-INSERT INTO citizen_requests(citizenUsername,requestProductName,
-requestProductQuantity,requestPeopleQuantity,acceptDate,completeDate) VALUES
-('citizen1','apples',3,3,'2024-03-11 22:10:05',0);
-
 INSERT INTO users (username, password, is_admin) 
 VALUES ('admin1', 'pass1', 1);
 
-ALTER TABLE citizen_requests
-MODIFY requestProductQuantity INT DEFAULT 0,  -- Allow 0 as a valid value
-MODIFY citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') DEFAULT NULL,  -- Allow NULL
-MODIFY acceptDate DATETIME DEFAULT NULL,  -- Default to 'zero' date
-MODIFY completeDate DATETIME DEFAULT NULL;  -- Default to 'zero' date
+INSERT INTO requests (username, productId, quantity, citizenProductCategory, requestProductName, numberOfPeople, status, acceptDate, completeDate)
+VALUES
+('citizen3', 1, 5, 'FOOD', 'Bread', 3, 'finished', NULL, NULL),
+('citizen1', 2, 10, 'DRINK', 'Water', 1, 'finished', '2024-08-25 14:30:00', '2024-08-30 16:00:00'),
+('citizen3', 3, 7, 'MEDS', 'Bandages', 2, 'finished', '2024-08-20 09:00:00', '2024-08-22 11:00:00'),
+('citizen3', 4, 3, 'TOOL', 'Hammer', 5, 'finished', NULL, NULL),
+('citizen2', 5, 12, 'OTHER', 'Milk', 4, 'finished', '2024-08-28 10:00:00', '2024-08-29 12:00:00');
