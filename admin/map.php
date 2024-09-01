@@ -82,7 +82,7 @@ check_login('admin');
         </div>
         <div>
             <input type="checkbox" id="exit" class="filter-checkbox" checked hidden> <!-- Hide the checkbox -->
-            <label for="exit-button" class="button exit" onclick="location.href='admin_main_page.html'">Exit</label> <!-- Aqua button for exiting -->
+            <label for="exit-button" class="button exit" onclick="location.href='admin_main_page.php'">Exit</label> <!-- Aqua button for exiting -->
         </div>        
     </div>
     <div class="map-container">

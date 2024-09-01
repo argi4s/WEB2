@@ -7,7 +7,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 //Icons from my images folder
 var redIcon = L.icon({
-    iconUrl: 'images/testicon.png',
+    iconUrl: '../baseIcon.png',
     iconSize: [40, 40]
 });
 

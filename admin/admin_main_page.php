@@ -8,51 +8,18 @@ check_login('admin');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
-    <style>
-        body {
-            background-color: #d2a07e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            text-align: center;
-        }
-        .button {
-            display: block;
-            width: 200px;
-            padding: 15px;
-            margin: 10px auto;
-            border: none;
-            background-color: #f44336;
-            color: white;
-            font-size: 18px;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .button.yellow {
-            background-color: #d2c966;
-        }
-        .button.logout{
-            background-color: orange;
-        }
-    </style>
+    <title>Admin Menu</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 </head>
-
 <body>
-    <div class="container">
-        <a href="warehouse.php" class="button">Show Warehouse</a>
-        <a href="map.php" class="button">Show Map</a>
-        <a href="statistics.php" class="button">Show Statistics</a>
-        <a href="create_rescuer_account.php" class="button yellow">Create Rescuer Account</a>
-        <a href="create_announcements.php" class="button yellow">Create Announcement</a>
-        <a href="../logout.php" class="button logout">Log out</a>
-    </div>
+    <h1>Admin Menu</h1>
+    <form id="adminMenuForm">
+        <a href="warehouse.php">Show Warehouse</a><br><br>
+        <a href="map.php">Show Map</a><br><br>
+        <a href="statistics.php">Show Statistics</a><br><br>
+        <a href="create_rescuer_account.php" class="yellow">Create Rescuer Account</a><br><br>
+        <a href="create_announcements.php" class="yellow">Create Announcement</a><br><br>
+        <a href="../logout.php" class="logout">Log out</a><br><br>
+    </form>
 </body>
 </html>
