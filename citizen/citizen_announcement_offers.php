@@ -24,7 +24,6 @@ $loggedInUser = $_SESSION['username'];
 
 // Handle the form submission for offering
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Check if the form is for offering or canceling
     if (isset($_POST['offerQuantity'])) {
         // Handle offering
         $requestId = $_POST['requestId'];
@@ -41,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $productId = $rowProduct['productId'];
         } else {
             // Product doesn't exist, insert it as a dummy product
-            $productCategory = 'OTHER'; // You can set a default category or determine it some other way
+            $productCategory = 'OTHER'; // Default category
             $sqlInsertDummyProduct = "INSERT INTO warehouse (productName, productCategory, productQuantity)
                                       VALUES ('$productName', '$productCategory', 0)";
             if ($conn->query($sqlInsertDummyProduct) === TRUE) {
@@ -51,30 +50,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        // Insert the offer into the requests table
-        $sqlInsertOffer = "INSERT INTO requests (username, productId, quantity, status, requestProductName, citizenProductCategory, numberOfPeople)
-                           VALUES ('$loggedInUser', $productId, $offerQuantity, 'pending', '$productName', 'OTHER', 1)";
+        // Insert the offer into the offers table
+        $sqlInsertOffer = "INSERT INTO offers (username, productId, quantity, status, numberOfPeople)
+                           VALUES ('$loggedInUser', $productId, $offerQuantity, 'pending', 1)";
 
         if ($conn->query($sqlInsertOffer) === TRUE) {
-            echo "Offer created successfully!";
-
             // Update the request's product quantity
             $sqlUpdateRequest = "UPDATE requests 
                                  SET quantity = quantity - $offerQuantity 
                                  WHERE requestId = $requestId";
             $conn->query($sqlUpdateRequest);
 
-            // Check if the request's quantity is now 0 and delete the request if it is
+            // Check if the request's quantity is now 0 and hide the request if it is
             $sqlCheckQuantity = "SELECT quantity FROM requests WHERE requestId = $requestId";
             $resultCheckQuantity = $conn->query($sqlCheckQuantity);
             if ($resultCheckQuantity->num_rows > 0) {
                 $rowCheckQuantity = $resultCheckQuantity->fetch_assoc();
                 if ($rowCheckQuantity['quantity'] <= 0) {
-                    $sqlDeleteRequest = "DELETE FROM requests WHERE requestId = $requestId";
-                    $conn->query($sqlDeleteRequest);
+                    // Hide the request by setting a flag
+                    $sqlHideRequest = "UPDATE requests SET isHidden = 1 WHERE requestId = $requestId";
+                    $conn->query($sqlHideRequest);
                 }
             }
 
+            echo "Offer created successfully!";
         } else {
             echo "Error: " . $conn->error;
         }
@@ -83,15 +82,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $cancelOfferId = $_POST['cancelOfferId'];
 
         // Check if the offer is pending
-        $sqlCheckStatus = "SELECT status FROM requests WHERE requestId = $cancelOfferId AND username = '$loggedInUser'";
+        $sqlCheckStatus = "SELECT status FROM offers WHERE offerId = $cancelOfferId AND username = '$loggedInUser'";
         $resultCheckStatus = $conn->query($sqlCheckStatus);
         
         if ($resultCheckStatus->num_rows > 0) {
             $rowCheckStatus = $resultCheckStatus->fetch_assoc();
             if ($rowCheckStatus['status'] === 'pending') {
                 // Cancel the offer
-                $sqlCancelOffer = "DELETE FROM requests WHERE requestId = $cancelOfferId AND username = '$loggedInUser'";
+                $sqlCancelOffer = "DELETE FROM offers WHERE offerId = $cancelOfferId AND username = '$loggedInUser'";
                 if ($conn->query($sqlCancelOffer) === TRUE) {
+                    // Restore the original request quantity
+                    $sqlGetOffer = "SELECT productId, quantity FROM offers WHERE offerId = $cancelOfferId";
+                    $resultGetOffer = $conn->query($sqlGetOffer);
+                    if ($resultGetOffer->num_rows > 0) {
+                        $offer = $resultGetOffer->fetch_assoc();
+                        $offerQuantity = $offer['quantity'];
+                        $productId = $offer['productId'];
+                        $sqlUpdateRequest = "UPDATE requests SET quantity = quantity + $offerQuantity WHERE productId = $productId";
+                        $conn->query($sqlUpdateRequest);
+                    }
+
                     echo "Offer canceled successfully!";
                 } else {
                     echo "Error canceling offer: " . $conn->error;
@@ -105,18 +115,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Fetch requests
-$sqlRequests = "SELECT r.requestId, r.username, c.name, c.surname, r.requestProductName, 
-                r.citizenProductCategory, r.quantity, r.numberOfPeople 
+// Fetch requests that are not hidden
+$sqlRequests = "SELECT r.requestId, r.username, c.name, c.surname, w.productName AS requestProductName, 
+                r.quantity, r.numberOfPeople 
         FROM requests r
-        JOIN citizens c ON r.username = c.username";
+        JOIN citizens c ON r.username = c.username
+        JOIN warehouse w ON r.productId = w.productId
+        WHERE r.isHidden = 0";
 $resultRequests = $conn->query($sqlRequests);
 
 // Fetch offers made by the logged-in user
-$sqlOffers = "SELECT r.requestId, r.quantity, r.createdAt, r.status 
-              FROM requests r
-              WHERE r.username = '$loggedInUser'";
+$sqlOffers = "SELECT o.offerId, o.quantity, o.createdAt, o.status, w.productName
+              FROM offers o
+              JOIN warehouse w ON o.productId = w.productId
+              WHERE o.username = '$loggedInUser'";
 $resultOffers = $conn->query($sqlOffers);
+
+// Fetch previous offers (with status 'finished' or 'taken') made by the logged-in user
+$sqlPreviousOffers = "SELECT o.offerId, o.quantity, o.createdAt, o.status, o.acceptDate, o.completeDate, w.productName
+                      FROM offers o
+                      JOIN warehouse w ON o.productId = w.productId
+                      WHERE o.username = '$loggedInUser' AND (o.status = 'finished' OR o.status = 'taken')";
+$resultPreviousOffers = $conn->query($sqlPreviousOffers);
+
+// Delete requests that have offers with status other than 'pending'
+$sqlDeleteRequests = "DELETE r FROM requests r
+                      JOIN offers o ON r.productId = o.productId
+                      WHERE o.status != 'pending'";
+$conn->query($sqlDeleteRequests);
 ?>
 
 <!DOCTYPE html>
@@ -140,6 +166,22 @@ $resultOffers = $conn->query($sqlOffers);
         .right {
             margin-left: 2%;
         }
+        .requests-container {
+            max-height: 600px; /* Adjust the height as needed */
+            overflow-y: auto; /* Enables vertical scrolling */
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .request-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .request-item:last-child {
+            border-bottom: none;
+        }
         .back-button {
             position: fixed;
             bottom: 10px;
@@ -155,6 +197,21 @@ $resultOffers = $conn->query($sqlOffers);
         .back-button:hover {
             background-color: #0056b3;
         }
+        table {
+            width: 150%; /* Increase table width to 150% */
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
     </style>
 </head>
 <body>
@@ -162,26 +219,27 @@ $resultOffers = $conn->query($sqlOffers);
     <div class="container">
         <div class="left">
             <h2>Requests</h2>
-            <?php
-            if ($resultRequests->num_rows > 0) {
-                while ($row = $resultRequests->fetch_assoc()) {
-                    echo "<div>";
-                    echo "<p><strong>" . $row["name"] . " " . $row["surname"] . "</strong> has requested <strong>" 
-                                        . $row["quantity"] . " " . $row["requestProductName"] . " (" 
-                                        . $row["citizenProductCategory"] . ")</strong> for <strong>" . $row["numberOfPeople"] . " people</strong></p>";
-                    echo '<form method="POST" action="">';
-                    echo '<input type="hidden" name="requestId" value="' . $row["requestId"] . '">';
-                    echo '<input type="hidden" name="requestProductName" value="' . $row["requestProductName"] . '">';
-                    echo '<label for="quantity">Offer Quantity:</label>';
-                    echo '<input type="number" name="offerQuantity" min="1" max="' . $row["quantity"] . '" required>';
-                    echo '<button type="submit">Offer</button>';
-                    echo '</form>';
-                    echo "</div><hr>";
+            <div class="requests-container">
+                <?php
+                if ($resultRequests->num_rows > 0) {
+                    while ($row = $resultRequests->fetch_assoc()) {
+                        echo '<div class="request-item">';
+                        echo "<p><strong>" . $row["name"] . " " . $row["surname"] . "</strong> has requested <strong>" 
+                                            . $row["quantity"] . " " . $row["requestProductName"] . "</strong> for <strong>" . $row["numberOfPeople"] . " people</strong></p>";
+                        echo '<form method="POST" action="">';
+                        echo '<input type="hidden" name="requestId" value="' . $row["requestId"] . '">';
+                        echo '<input type="hidden" name="requestProductName" value="' . $row["requestProductName"] . '">';
+                        echo '<label for="quantity">Offer Quantity:</label>';
+                        echo '<input type="number" name="offerQuantity" min="1" max="' . $row["quantity"] . '" required>';
+                        echo '<button type="submit">Offer</button>';
+                        echo '</form>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo "<p>No requests available.</p>";
                 }
-            } else {
-                echo "<p>No requests available.</p>";
-            }
-            ?>
+                ?>
+            </div>
         </div>
         
         <div class="right">
@@ -190,10 +248,11 @@ $resultOffers = $conn->query($sqlOffers);
             if ($resultOffers->num_rows > 0) {
                 while ($row = $resultOffers->fetch_assoc()) {
                     echo "<div>";
-                    echo "<p>You offered <strong>" . $row["quantity"] . " units</strong> on " . $row["createdAt"] . " - Status: " . $row["status"] . "</p>";
+                    echo "<p>You offered <strong>" . $row["quantity"] . " units of " . $row["productName"] . "</strong> on " 
+                         . $row["createdAt"] . " - Status: " . $row["status"] . "</p>";
                     if ($row["status"] === 'pending') {
                         echo '<form method="POST" action="">';
-                        echo '<input type="hidden" name="cancelOfferId" value="' . $row["requestId"] . '">';
+                        echo '<input type="hidden" name="cancelOfferId" value="' . $row["offerId"] . '">';
                         echo '<button type="submit">Cancel Offer</button>';
                         echo '</form>';
                     }
@@ -203,9 +262,42 @@ $resultOffers = $conn->query($sqlOffers);
                 echo "<p>You have not made any offers yet.</p>";
             }
             ?>
+            
+            <h2>Previous Offers</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Accept Date</th>
+                        <th>Complete Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($resultPreviousOffers->num_rows > 0) {
+                        while ($row = $resultPreviousOffers->fetch_assoc()) {
+                            echo '<tr>';
+                            echo '<td>' . htmlspecialchars($row["productName"]) . '</td>';
+                            echo '<td>' . htmlspecialchars($row["quantity"]) . '</td>';
+                            echo '<td>' . htmlspecialchars($row["createdAt"]) . '</td>';
+                            echo '<td>' . htmlspecialchars($row["status"]) . '</td>';
+                            echo '<td>' . htmlspecialchars($row["acceptDate"]) . '</td>';
+                            echo '<td>' . htmlspecialchars($row["completeDate"]) . '</td>';
+                            echo '</tr>';
+                        }
+                    } else {
+                        echo '<tr><td colspan="6">No previous offers available.</td></tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <a href="citizen_main_page.php" class="back-button">Go Back</a>
 </body>
 </html>
+

@@ -51,8 +51,6 @@ check_login('citizen');
         <a href="citizen_request.php" class="button">Request Goods</a>
         
         <a href="citizen_announcement_offers.php" class="button yellow">Offers Announcement</a>
-        
-        <a href="citizen_previews_pending_offers.php" class="button yellow">Previews/Pending Offers</a>
 
         <a href="../logout.php" class="button logout">Log out</a>
     </div>

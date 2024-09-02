@@ -66,6 +66,8 @@ CREATE TABLE requests (
     quantity INT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
+    citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') ,
+    requestProductName VARCHAR(25) ,
     acceptDate DATETIME DEFAULT NULL,
     completeDate DATETIME DEFAULT NULL,
     numberOfPeople INT NOT NULL,
@@ -269,3 +271,11 @@ VALUES
 ('citizen3', 3, 7, 'MEDS', 'Bandages', 2, 'finished', '2024-08-20 09:00:00', '2024-08-22 11:00:00'),
 ('citizen3', 4, 3, 'TOOL', 'Hammer', 5, 'finished', NULL, NULL),
 ('citizen2', 5, 12, 'OTHER', 'Milk', 4, 'finished', '2024-08-28 10:00:00', '2024-08-29 12:00:00');
+
+
+ALTER TABLE requests ADD COLUMN isHidden TINYINT(1) DEFAULT 0;
+
+INSERT INTO offers (username, productId, quantity, status, numberOfPeople, acceptDate, completeDate) 
+VALUES 
+('citizen1', 3, 8, 'finished', 3, '2024-08-30 14:00:00', '2024-09-01 10:00:00'), -- Adjust the productId as needed
+('citizen1', 4, 12, 'finished', 5, '2024-08-28 09:00:00', '2024-08-29 17:00:00'); -- Adjust the productId as needed
