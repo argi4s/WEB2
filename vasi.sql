@@ -66,8 +66,6 @@ CREATE TABLE requests (
     quantity INT NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status ENUM('pending', 'taken', 'finished') NOT NULL DEFAULT 'pending',
-    citizenProductCategory ENUM('FOOD', 'DRINK', 'MEDS', 'TOOL', 'OTHER') ,
-    requestProductName VARCHAR(25) ,
     acceptDate DATETIME DEFAULT NULL,
     completeDate DATETIME DEFAULT NULL,
     numberOfPeople INT NOT NULL,

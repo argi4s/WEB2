@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("You must provide either a product name or product category.");
     }
 
-    // Retrieve the productId from the warehouse table based on the productName
+    // Retrieve the productId from the warehouse table based on the productName or productCategory
     $productId = null;
     if ($requestProductName || $citizenProductCategory) {
         // Check if the product exists
@@ -77,8 +77,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch data for Pending Requests and Previous Requests
-$pendingSql = "SELECT * FROM requests WHERE status = 'pending'";
-$previousSql = "SELECT * FROM requests WHERE status != 'pending'";
+$pendingSql = "
+    SELECT r.requestId, r.username, r.quantity, r.numberOfPeople, r.status, w.productName, w.productCategory
+    FROM requests r
+    JOIN warehouse w ON r.productId = w.productId
+    WHERE r.status = 'pending'
+";
+
+$previousSql = "
+    SELECT r.requestId, r.username, r.quantity, r.numberOfPeople, r.status, r.acceptDate, r.completeDate, w.productName, w.productCategory
+    FROM requests r
+    JOIN warehouse w ON r.productId = w.productId
+    WHERE r.status != 'pending'
+";
 
 $pendingResult = mysqli_query($conn, $pendingSql);
 $previousResult = mysqli_query($conn, $previousSql);
@@ -122,6 +133,37 @@ $previousResult = mysqli_query($conn, $previousSql);
         }
     </style>
     <script>
+        function fetchAndSetProductName() {
+            const category = document.getElementById('productCategory').value.trim();
+            const productField = document.getElementById('product');
+
+            // Only proceed if a category is selected
+            if (category) {
+                // Create an AJAX request
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'fetch_product.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.productName) {
+                                productField.value = response.productName;
+                            } else {
+                                productField.value = '';
+                            }
+                        } else {
+                            console.error('Failed to fetch product name.');
+                        }
+                    }
+                };
+
+                // Send the request with the selected category
+                xhr.send('category=' + encodeURIComponent(category));
+            }
+        }
+
         function validateForm() {
             const product = document.getElementById('product').value.trim();
             const category = document.getElementById('productCategory').value.trim();
@@ -176,7 +218,7 @@ $previousResult = mysqli_query($conn, $previousSql);
             <input type="number" id="requestProductQuantity" name="Quantity" placeholder="Type the amount of products you want" required>
 
             <label for="productCategory">Product Category:</label>
-            <input list="category-options" id="productCategory" name="ProductCategory" placeholder="Select a category...">
+            <input list="category-options" id="productCategory" name="ProductCategory" placeholder="Select a category..." onchange="fetchAndSetProductName()">
             <datalist id="category-options">
                 <option value="FOOD">
                 <option value="DRINK">
@@ -206,9 +248,9 @@ $previousResult = mysqli_query($conn, $previousSql);
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($pendingResult)): ?>
                <tr>
-                    <td><?php echo htmlspecialchars($row['requestProductName'] ?? ''); ?></td>
+                    <td><?php echo htmlspecialchars($row['productName'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($row['quantity'] ?? '0'); ?></td>
-                    <td><?php echo htmlspecialchars($row['citizenProductCategory'] ?? 'Not Set'); ?></td>
+                    <td><?php echo htmlspecialchars($row['productCategory'] ?? 'Not Set'); ?></td>
                     <td><?php echo htmlspecialchars($row['numberOfPeople'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($row['status'] ?? 'pending'); ?></td>
                </tr>
@@ -232,9 +274,9 @@ $previousResult = mysqli_query($conn, $previousSql);
         <tbody>
             <?php while ($row = mysqli_fetch_assoc($previousResult)): ?>
                <tr>
-                    <td><?php echo htmlspecialchars($row['requestProductName'] ?? ''); ?></td>
+                    <td><?php echo htmlspecialchars($row['productName'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($row['quantity'] ?? '0'); ?></td>
-                    <td><?php echo htmlspecialchars($row['citizenProductCategory'] ?? 'Not Set'); ?></td>
+                    <td><?php echo htmlspecialchars($row['productCategory'] ?? 'Not Set'); ?></td>
                     <td><?php echo htmlspecialchars($row['numberOfPeople'] ?? ''); ?></td>
                     <td><?php echo htmlspecialchars($row['status'] ?? 'finished'); ?></td>
                     <td><?php echo htmlspecialchars($row['acceptDate'] ?? ''); ?></td>
