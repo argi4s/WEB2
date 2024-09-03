@@ -12,14 +12,32 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch rescuers with usernames
+// Fetch rescuers with usernames, latitude, and longitude
 $rescuers_sql = "SELECT username, latitude, longitude FROM rescuers";
 $rescuers_result = $conn->query($rescuers_sql);
 
 $rescuers = [];
 if ($rescuers_result->num_rows > 0) {
     while ($row = $rescuers_result->fetch_assoc()) {
-        $rescuers[] = $row;
+        // Fetch products associated with this rescuer
+        $products_sql = "SELECT productName, productQuantity FROM onvehicles WHERE rescuerUsername = ?";
+        $stmt = $conn->prepare($products_sql);
+        $stmt->bind_param("s", $row['username']);
+        $stmt->execute();
+        $products_result = $stmt->get_result();
+        
+        $products = [];
+        while ($product_row = $products_result->fetch_assoc()) {
+            $products[] = $product_row;
+        }
+
+        // Add rescuer info and products to the array
+        $rescuers[] = [
+            'username' => $row['username'],
+            'latitude' => $row['latitude'],
+            'longitude' => $row['longitude'],
+            'products' => $products
+        ];
     }
 }
 
@@ -34,22 +52,7 @@ if ($citizens_result->num_rows > 0) {
     }
 }
 
-/*    ------------PAPADEROS-----------
-Diaxeirisths 3) Probolh xarth b) (kai paromoia fash to c, trekse ton xarth kai pata ta popups gia na katalabeis ti kanoune)
-Na breis me poio querry mporeis na emfaniseis ta zhtoumena. Gia to php/js kommati mhn anhsuxeis, ta apo panw paradeigmata mazi me to map_functionality.js arxeio tha se kathodhghsoun
-// Fetch requests
-$requests_sql = "SELECT createdAt, productId, quantity FROM requests";
-$requests_result = $conn->query($requests_sql);
-
-$requests = [];
-if ($requests_result->num_rows > 0) {
-    while ($row = $requests_result->fetch_assoc()) {
-        $requests[] = $row;
-    }
-}
-*/
-
-echo json_encode(['rescuers' => $rescuers, 'citizens' => $citizens]);   //isws xreiastei na baleis ta requests kai edw
+echo json_encode(['rescuers' => $rescuers, 'citizens' => $citizens]);
 
 $conn->close();
 ?>

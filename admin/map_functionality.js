@@ -80,14 +80,43 @@ fetch('get_coordinates.php')
     .then(data => {
         // Add rescuers markers
         data.rescuers.forEach(function(rescuer) {
+            // Count the number of products
+            const productCount = rescuer.products ? rescuer.products.length : 0;
+
+            // Construct the popup content with rescuer information and associated products
+            let popupContent = `
+                Rescuer: ${rescuer.username}<br>
+                Location: ${rescuer.latitude}, ${rescuer.longitude}<br>
+            `;
+
+            // Determine the status based on the number of products
+            if (productCount < 1) {
+                popupContent += "<br>Status: Empty";
+            } else if (productCount >= 1 && productCount < 4) {
+                popupContent += "<br>Status: Loaded<br>";
+                rescuer.products.forEach(function(product) {
+                    popupContent += `${product.productName}: ${product.productQuantity}<br>`;
+                });
+            } else if (productCount >= 4) {
+                popupContent += "<br>Status: Full<br>";
+                rescuer.products.forEach(function(product) {
+                    popupContent += `${product.productName}: ${product.productQuantity}<br>`;
+                });
+            }
+
+            // Create the marker with the custom popup
             L.marker([rescuer.latitude, rescuer.longitude], { icon: carIcon }).addTo(map)
-                .bindPopup("Rescuer: " + rescuer.username + "<br>Location: " + [rescuer.latitude, rescuer.longitude].toString());
+                .bindPopup(popupContent);
         });
 
         // Add citizens markers
         data.citizens.forEach(function(citizen) {
             L.marker([citizen.latitude, citizen.longitude], { icon: greenIcon }).addTo(map)
-                .bindPopup("Citizen: " + citizen.name + " " + citizen.surname + "<br>Phone: " + citizen.phone + "<br>Location: " + [citizen.latitude, citizen.longitude].toString());
+                .bindPopup(`
+                    Citizen: ${citizen.name} ${citizen.surname}<br>
+                    Phone: ${citizen.phone}<br>
+                    Location: ${citizen.latitude}, ${citizen.longitude}
+                `);
         });
     })
     .catch(error => console.error('Error fetching coordinates:', error));
