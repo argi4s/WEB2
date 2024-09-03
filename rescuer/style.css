@@ -2,7 +2,7 @@
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 body {
-    background-color: #d2a07e;
+    background-color: #c5c5c5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -91,10 +91,10 @@ body {
     border-radius: 5px;
 }
 .tasktainer.request {
-    background-color: #0597d8;
+    border: 5px solid #0597d8;
 }
 .tasktainer.offer {
-    background-color: #d9cf0b;
+    border: 5px solid #d9cf0b;
 }
 .form-container {
     width: 410px;

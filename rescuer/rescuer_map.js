@@ -136,6 +136,7 @@ function updateSelfPosition(lat, lng) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            location.reload(); // Reload the page to reflect the changes
             alert('Self position updated successfully.');
         } else {
             alert('Failed to update self position: ' + data.message);
@@ -292,6 +293,13 @@ function applyFilter(filterId) {
     baseLayer.addTo(map);
     console.log('Base layer added to map');
 
+    function drawLine(start, end) {
+        const line = L.polyline([start, end], {
+            color: '#ff0000', // Customize the line color
+            weight: 5, // Customize the line thickness
+        }).addTo(map);
+    }   
+
     // Add filtered data layers based on active filters
     if (activeFilters.length > 0) {
         activeFilters.forEach(function (filter) {
@@ -307,6 +315,9 @@ function applyFilter(filterId) {
                 case 'filter3':
                     filteredData3.addTo(map);
                     console.log('Adding filteredData3 to map');
+                    filteredData3.eachLayer(function (layer) {
+                        drawLine(selfMarker.getLatLng(), layer.getLatLng());
+                    });
                     break;
                 case 'filter4':
                     filteredData4.addTo(map);

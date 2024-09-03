@@ -262,15 +262,6 @@ INSERT INTO rescuer_tasks (rescuerUsername, taskType, requestId) VALUES
 INSERT INTO users (username, password, is_admin) 
 VALUES ('admin1', 'pass1', 1);
 
-INSERT INTO requests (username, productId, quantity, citizenProductCategory, requestProductName, numberOfPeople, status, acceptDate, completeDate)
-VALUES
-('citizen3', 1, 5, 'FOOD', 'Bread', 3, 'finished', NULL, NULL),
-('citizen1', 2, 10, 'DRINK', 'Water', 1, 'finished', '2024-08-25 14:30:00', '2024-08-30 16:00:00'),
-('citizen3', 3, 7, 'MEDS', 'Bandages', 2, 'finished', '2024-08-20 09:00:00', '2024-08-22 11:00:00'),
-('citizen3', 4, 3, 'TOOL', 'Hammer', 5, 'finished', NULL, NULL),
-('citizen2', 5, 12, 'OTHER', 'Milk', 4, 'finished', '2024-08-28 10:00:00', '2024-08-29 12:00:00');
-
-
 ALTER TABLE requests ADD COLUMN isHidden TINYINT(1) DEFAULT 0;
 
 INSERT INTO offers (username, productId, quantity, status, numberOfPeople, acceptDate, completeDate) 
