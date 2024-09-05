@@ -296,7 +296,8 @@ function applyFilter(filterId) {
     function drawLine(start, end) {
         const line = L.polyline([start, end], {
             color: '#ff0000', // Customize the line color
-            weight: 5, // Customize the line thickness
+            weight: 2, // Customize the line thickness
+            opacity: 0.4 // Set the opacity to 50%
         }).addTo(map);
     }   
 

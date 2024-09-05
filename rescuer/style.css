@@ -21,7 +21,7 @@ body {
     padding: 15px;
     margin: 10px auto;
     border: none;
-    background-color: #f44336;
+    background-color: lightcoral;
     color: white;
     font-size: 18px;
     text-align: center;
@@ -39,14 +39,14 @@ body {
     background-color: orange;
 }
 .button.green {
-    background-color: #30dd0e;
+    background-color: #6de86d;
 }
 .button.smallgreen{
     width: 50%;
     padding: 5%;
     margin: 3%;
     font-size: 10px;
-    background-color: #30dd0e;
+    background-color: #6de86d;
 }
 .button.smallred{
     width: 50%;
@@ -180,7 +180,7 @@ body {
     margin-top: 7px;
 }
 .filter-btn.active {
-    background-color: #30dd0e;
+    background-color: #6de86d;
     color: white;
 }
 .text-button {
