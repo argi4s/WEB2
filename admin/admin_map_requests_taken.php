@@ -18,8 +18,8 @@ $sql = "SELECT r.*, c.name, c.surname, c.phone, c.latitude, c.longitude, w.produ
         FROM requests r
         JOIN citizens c ON r.username = c.username
         JOIN warehouse w ON r.productId = w.productId
-        LEFT JOIN rescuer_tasks rt ON r.requestId = rt.requestId AND rt.taskType = 'request'
-        WHERE r.status = 'pending'
+        LEFT JOIN rescuer_tasks rt ON r.requestId = rt.requestId 
+        WHERE r.status = 'taken'
         ORDER BY r.createdAt";
 //changed status from pending->taken and rescuer username
 $result = $conn->query($sql);   

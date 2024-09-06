@@ -131,14 +131,13 @@ function fetchTakenRequests() {
             filteredData2 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: baseIcon });
+                    return L.marker(latlng, { icon: requestIcon });
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
                     Phone: ${feature.properties.phone}<br>
                     Requesting: ${feature.properties.quantity}, ${feature.properties.productName}<br>
-                    Status: ${feature.properties.status}, by: ${feature.properties.rescuerUsername}`);
-                    
+                    Status: ${feature.properties.status}, by: ${feature.properties.rescuerUsername}`); 
                 }
             });
 
@@ -189,10 +188,11 @@ function applyFilter(filterId) {
                     filteredData1.addTo(map);
                     console.log('Adding filteredData1 to map');
                     break;
-                /*case 'filter2':
+                case 'filter2':
                     filteredData2.addTo(map);
                     console.log('Adding filteredData2 to map');
                     break;
+                /*
                 case 'filter3':
                     filteredData3.addTo(map);
                     console.log('Adding filteredData3 to map');
@@ -230,7 +230,7 @@ function initializeMap(){
     fetchBaseCoords();
     // Call the function to fetch self position when the map is initialized
     fetchPendingRequests(); // Fetch pending requests initially
-    // fetchTakenRequests();
+    fetchTakenRequests();
     // fetchPendingOffers(); // Fetch pending offers initially
     // fetchTakenOffers();
     // fetchRescuers(); // Fetch other rescuers
