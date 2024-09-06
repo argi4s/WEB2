@@ -54,9 +54,9 @@ CREATE TABLE onvehicles (
 
 CREATE TABLE announcements (
     announcementId INT AUTO_INCREMENT PRIMARY KEY,
-    announcementTitle VARCHAR(255) NOT NULL,
-    announcementText TEXT NOT NULL,
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    requestId INT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (requestId) REFERENCES requests(requestId)
 )engine=InnoDB;
 
 CREATE TABLE requests (

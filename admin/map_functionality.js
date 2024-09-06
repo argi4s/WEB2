@@ -103,7 +103,7 @@ function fetchBaseCoords() {
 }
 
 function fetchPendingRequests() {
-    fetch('admin_map_requests.php')
+    fetch('admin_map_requests_pending.php')
         .then(response => response.json())
         .then(geoJsonData => {
             filteredData1 = L.geoJSON(geoJsonData, {
@@ -112,9 +112,9 @@ function fetchPendingRequests() {
                     return L.marker(latlng, { icon: requestIcon });
                 },
                 onEachFeature: function (feature, layer) {
-                    layer.bindPopup(`Citizen: ${citizen.name} ${citizen.surname}<br>
-                    Phone: ${citizen.phone}<br>
-                    Location: ${citizen.latitude}, ${citizen.longitude}`);
+                    layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
+                    Phone: ${feature.properties.phone}<br>
+                    Requesting: ${feature.properties.quantity}, ${feature.properties.productName}`);
                 }
             });
 
@@ -124,34 +124,28 @@ function fetchPendingRequests() {
         .catch(error => console.error('Error fetching pending requests:', error));
 }
 
-function fetchXX() {
-    fetch('XX.php')
+function fetchTakenRequests() {
+    fetch('admin_map_requests_taken.php')
         .then(response => response.json())
         .then(geoJsonData => {
-            filteredDataXX = L.geoJSON(geoJsonData, {
+            filteredData2 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: XXIcon });
+                    return L.marker(latlng, { icon: baseIcon });
                 },
                 onEachFeature: function (feature, layer) {
-                    layer.bindPopup(`<div class="tasktainer request" style="margin: 0px; min-width: 150px; padding-right:5px;">
-                    <div class="text">
-                        <p class="bold-text">${feature.properties.quantity} ${feature.properties.productName}</p>
-                        <p class="subtext">${feature.properties.surname} ${feature.properties.name}</p>
-                        <p class="subtext">${feature.properties.phone}</p>
-                        <p class="subtext">${feature.properties.createdAt}</p>
-                    </div>
-                    <div class="container" style="display: flex; justify-content: center;">
-                        <button class="button smallgreen" onclick="takeOnRequest(${feature.properties.requestId})">Take On</button>
-                    </div>
-              </div>`);
+                    layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
+                    Phone: ${feature.properties.phone}<br>
+                    Requesting: ${feature.properties.quantity}, ${feature.properties.productName}<br>
+                    Status: ${feature.properties.status}, by: ${feature.properties.rescuerUsername}`);
+                    
                 }
             });
 
-            console.log('XX fetched');
+            console.log('admin_map_taken.php data fetched');
             applyFilter(); // Apply the current filters after fetching data
         })
-        .catch(error => console.error('Error fetching pending requests:', error));
+        .catch(error => console.error('Error fetching taken requests:', error));
 }
 
 function applyFilter(filterId) {
@@ -162,7 +156,7 @@ function applyFilter(filterId) {
     }
 
     var activeFilters = [];
-    for (var i = 1; i <= 6; i++) {
+    for (var i = 1; i <= 1; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
         }
@@ -195,7 +189,7 @@ function applyFilter(filterId) {
                     filteredData1.addTo(map);
                     console.log('Adding filteredData1 to map');
                     break;
-                case 'filter2':
+                /*case 'filter2':
                     filteredData2.addTo(map);
                     console.log('Adding filteredData2 to map');
                     break;
@@ -208,13 +202,14 @@ function applyFilter(filterId) {
                     console.log('Adding filteredData4 to map');
                     break;
                 case 'filter5':
-                    filteredData4.addTo(map);
-                    console.log('Adding filteredData4 to map');
+                    filteredData5.addTo(map);
+                    console.log('Adding filteredData5 to map');
                     break;
                 case 'filter6':
-                    filteredData4.addTo(map);
-                    console.log('Adding filteredData4 to map');
+                    filteredData6.addTo(map);
+                    console.log('Adding filteredData6 to map');
                     break;
+                    */
                 default:
                     console.log('No matching filter found for', filter);
             }
