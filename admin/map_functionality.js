@@ -13,7 +13,7 @@ var filteredData4 = L.geoJSON(null); // T Offers
 var filteredData5 = L.geoJSON(null); // A Rescuers
 var filteredData6 = L.geoJSON(null); // I Rescuers
 
-var baseMarker; // Variable to hold the base marker
+var warehouseMarker; // Variable to hold the base marker
 
 var requestIcon = L.icon({
     iconUrl: '../requestIcon.png', // Path to your request icon
@@ -55,7 +55,7 @@ function fetchBaseCoords() {
             var latitude = data.latitude;   //fetched coordinates
             var longitude = data.longitude;
 
-            var warehouseMarker = L.marker([latitude, longitude], { icon: baseIcon, draggable: true }).addTo(map);   // Create a draggable marker at the fetched coordinates
+            warehouseMarker = L.marker([latitude, longitude], { icon: baseIcon, draggable: true }).addTo(map);   // Create a draggable marker at the fetched coordinates
 
             warehouseMarker.bindPopup("Warehouse location: " + warehouseMarker.getLatLng().toString()).openPopup(); // Bind the initial popup content
 
@@ -137,14 +137,36 @@ function fetchTakenRequests() {
                     layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
                     Phone: ${feature.properties.phone}<br>
                     Requesting: ${feature.properties.quantity}, ${feature.properties.productName}<br>
-                    Status: ${feature.properties.status}, by: ${feature.properties.rescuerUsername}`); 
+                    Status: ${feature.properties.status} by: ${feature.properties.rescuerUsername}`); 
                 }
             });
 
-            console.log('admin_map_taken.php data fetched');
+            console.log('Taken requests fetched');
             applyFilter(); // Apply the current filters after fetching data
         })
         .catch(error => console.error('Error fetching taken requests:', error));
+}
+
+function fetchPendingOffers() {
+    fetch('admin_map_offers_pending.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData3 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: offerIcon });
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
+                    Phone: ${feature.properties.phone}<br>
+                    Offering: ${feature.properties.quantity}, ${feature.properties.productName}`);
+                }
+            });
+
+            console.log('Pending offers fetched');
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error fetching pending requests:', error));
 }
 
 function applyFilter(filterId) {
@@ -155,7 +177,7 @@ function applyFilter(filterId) {
     }
 
     var activeFilters = [];
-    for (var i = 1; i <= 1; i++) {
+    for (var i = 1; i <= 3; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
         }
@@ -163,7 +185,7 @@ function applyFilter(filterId) {
     console.log('Active filters:', activeFilters);
 
     map.eachLayer(function (layer) {
-        if (layer !== baseLayer && layer !== baseMarker) {
+        if (layer !== baseLayer && layer !== warehouseMarker) {
             console.log('Removing layer:', layer);
             map.removeLayer(layer);
         }
@@ -192,11 +214,11 @@ function applyFilter(filterId) {
                     filteredData2.addTo(map);
                     console.log('Adding filteredData2 to map');
                     break;
-                /*
                 case 'filter3':
                     filteredData3.addTo(map);
                     console.log('Adding filteredData3 to map');
                     break;
+                    /*
                 case 'filter4':
                     filteredData4.addTo(map);
                     console.log('Adding filteredData4 to map');
@@ -231,7 +253,7 @@ function initializeMap(){
     // Call the function to fetch self position when the map is initialized
     fetchPendingRequests(); // Fetch pending requests initially
     fetchTakenRequests();
-    // fetchPendingOffers(); // Fetch pending offers initially
+    fetchPendingOffers(); // Fetch pending offers initially
     // fetchTakenOffers();
     // fetchRescuers(); // Fetch other rescuers
     // fetchInactiveRescuers();
