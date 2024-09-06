@@ -169,6 +169,53 @@ function fetchPendingOffers() {
         .catch(error => console.error('Error fetching pending requests:', error));
 }
 
+function fetchTakenOffers() {
+    fetch('admin_map_offers_taken.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData4 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: offerIcon });
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
+                    Phone: ${feature.properties.phone}<br>
+                    Offering: ${feature.properties.quantity}, ${feature.properties.productName},
+                    Taken by: ${feature.properties.rescuerUsername}`);
+                    
+                }
+            });
+
+            console.log('Taken offers fetched');
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error taken pending requests:', error));
+}
+
+function fetchRescuers() {
+    fetch('admin_map_rescuers_active.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData5 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: offerIcon });
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
+                    Phone: ${feature.properties.phone}<br>
+                    Carries: ${feature.properties.vehicleProducts}`);
+                    
+                }
+            });
+
+            console.log('Taken offers fetched');
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error taken pending requests:', error));
+}
+
 function applyFilter(filterId) {
     if (filterId) {
         var filterButton = document.getElementById(filterId);
@@ -177,7 +224,7 @@ function applyFilter(filterId) {
     }
 
     var activeFilters = [];
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= 5; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
         }
@@ -218,12 +265,11 @@ function applyFilter(filterId) {
                     filteredData3.addTo(map);
                     console.log('Adding filteredData3 to map');
                     break;
-                    /*
                 case 'filter4':
                     filteredData4.addTo(map);
                     console.log('Adding filteredData4 to map');
                     break;
-                case 'filter5':
+                /*case 'filter5':
                     filteredData5.addTo(map);
                     console.log('Adding filteredData5 to map');
                     break;
@@ -254,8 +300,8 @@ function initializeMap(){
     fetchPendingRequests(); // Fetch pending requests initially
     fetchTakenRequests();
     fetchPendingOffers(); // Fetch pending offers initially
-    // fetchTakenOffers();
-    // fetchRescuers(); // Fetch other rescuers
+    fetchTakenOffers();
+    fetchRescuers(); // Fetch other rescuers
     // fetchInactiveRescuers();
     dataLayer.addTo(map);
 }
