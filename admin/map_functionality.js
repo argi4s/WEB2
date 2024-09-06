@@ -225,14 +225,9 @@ function applyFilter(filterId) {
     }
 
     // Ensure the base marker is always added to the map
-    if (baseMarker) {
-        baseMarker.addTo(map);
+    if (warehouseMarker) {
+        warehouseMarker.addTo(map);
         console.log('Base marker added to map in applyFilter');
-    }
-
-    if (selfMarker) {
-        selfMarker.addTo(map);
-        console.log('Self marker added to map in applyFilter');
     }
 }
 
