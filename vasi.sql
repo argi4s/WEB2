@@ -52,15 +52,9 @@ CREATE TABLE onvehicles (
     ON DELETE CASCADE ON UPDATE CASCADE
 )engine=InnoDB;
 
-CREATE TABLE announcements (
-    announcementId INT AUTO_INCREMENT PRIMARY KEY,
-    requestId INT NOT NULL,
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (requestId) REFERENCES requests(requestId)
-)engine=InnoDB;
 
 CREATE TABLE requests (
-    requestId INT AUTO_INCREMENT PRIMARY KEY,
+    requestId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(25) NOT NULL,
     productId INT UNSIGNED NOT NULL,
     quantity INT NOT NULL,
@@ -73,6 +67,13 @@ CREATE TABLE requests (
     FOREIGN KEY (productId) REFERENCES warehouse(productId) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+
+CREATE TABLE announcements (
+    announcementId INT AUTO_INCREMENT PRIMARY KEY,  
+    announcements_requestId INT UNSIGNED NOT NULL,  
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (announcements_requestId) REFERENCES requests(requestId) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE offers (
     offerId INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,13 +93,13 @@ CREATE TABLE rescuer_tasks (
     taskId INT AUTO_INCREMENT PRIMARY KEY,
     rescuerUsername VARCHAR(25) NOT NULL,
     taskType ENUM('request', 'offer') NOT NULL,
-    requestId INT,
+    requestId INT UNSIGNED NOT NULL,
     offerId INT,
     FOREIGN KEY (rescuerUsername) REFERENCES users(username),
     FOREIGN KEY (requestId) REFERENCES requests(requestId) ON DELETE CASCADE,
-    FOREIGN KEY (offerId) REFERENCES offers(offerId) ON DELETE CASCADE,
-    CHECK ((requestId IS NOT NULL AND offerId IS NULL) OR (requestId IS NULL AND offerId IS NOT NULL))
-) engine=InnoDB;
+    FOREIGN KEY (offerId) REFERENCES offers(offerId) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 
 
 DELIMITER //
@@ -231,13 +232,7 @@ INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
 ('Bandages', 7, 'rescuer4'),
 ('Milk', 15, 'rescuer5');
 
--- Insert data into announcements table
-INSERT INTO announcements (announcementTitle, announcementText) VALUES
-('Meeting', 'There will be a meeting at 5 PM'),
-('Supplies', 'New supplies have arrived'),
-('Training', 'Training session on Monday'),
-('Event', 'Community event this weekend'),
-('Maintenance', 'System maintenance on Friday');
+
 
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
