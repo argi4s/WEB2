@@ -200,20 +200,41 @@ function fetchRescuers() {
             filteredData5 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: offerIcon });
+                    return L.marker(latlng, { icon: rescuerIcon });
                 },
                 onEachFeature: function (feature, layer) {
-                    layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
+                    layer.bindPopup(`Rescuer: ${feature.properties.name} ${feature.properties.surname}<br>
                     Phone: ${feature.properties.phone}<br>
                     Carries: ${feature.properties.vehicleProducts}`);
                     
                 }
             });
 
-            console.log('Taken offers fetched');
+            console.log('Rescuers fetched');
             applyFilter(); // Apply the current filters after fetching data
         })
-        .catch(error => console.error('Error taken pending requests:', error));
+        .catch(error => console.error('Error Rescuers requests:', error));
+}
+
+function fetchInactiveRescuers() {
+    fetch('admin_map_rescuers_inactive.php')
+        .then(response => response.json())
+        .then(geoJsonData => {
+            filteredData6 = L.geoJSON(geoJsonData, {
+                pointToLayer: function (feature, latlng) {
+                    // Create a marker with the custom icon
+                    return L.marker(latlng, { icon: rescuerIcon });
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(`Rescuer: ${feature.properties.name} ${feature.properties.surname}<br>
+                    Phone: ${feature.properties.phone}<br>`);
+                }
+            });
+
+            console.log('Inactive escuers fetched');
+            applyFilter(); // Apply the current filters after fetching data
+        })
+        .catch(error => console.error('Error Rescuers requests:', error));
 }
 
 function applyFilter(filterId) {
@@ -224,7 +245,7 @@ function applyFilter(filterId) {
     }
 
     var activeFilters = [];
-    for (var i = 1; i <= 5; i++) {
+    for (var i = 1; i <= 6; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
         }
@@ -269,7 +290,7 @@ function applyFilter(filterId) {
                     filteredData4.addTo(map);
                     console.log('Adding filteredData4 to map');
                     break;
-                /*case 'filter5':
+                case 'filter5':
                     filteredData5.addTo(map);
                     console.log('Adding filteredData5 to map');
                     break;
@@ -277,7 +298,6 @@ function applyFilter(filterId) {
                     filteredData6.addTo(map);
                     console.log('Adding filteredData6 to map');
                     break;
-                    */
                 default:
                     console.log('No matching filter found for', filter);
             }
@@ -302,7 +322,7 @@ function initializeMap(){
     fetchPendingOffers(); // Fetch pending offers initially
     fetchTakenOffers();
     fetchRescuers(); // Fetch other rescuers
-    // fetchInactiveRescuers();
+    fetchInactiveRescuers();
     dataLayer.addTo(map);
 }
 
