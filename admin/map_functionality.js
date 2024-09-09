@@ -15,16 +15,32 @@ var filteredData6 = L.geoJSON(null); // I Rescuers
 
 var warehouseMarker; // Variable to hold the base marker
 
-var requestIcon = L.icon({
-    iconUrl: '../requestIcon.png', // Path to your request icon
+var pendingRequestIcon = L.icon({
+    iconUrl: '../pendingRequestIcon.png', // Path to your request icon
     iconSize: [40, 40],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
 
-var offerIcon = L.icon({
-    iconUrl: '../offerIcon.png', // Path to your offer icon
+var takenRequestIcon = L.icon({
+    iconUrl: '../takenRequestIcon.png', // Path to your request icon
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var pendingOfferIcon = L.icon({
+    iconUrl: '../pendingOfferIcon.png', // Path to your offer icon
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var takenOfferIcon = L.icon({
+    iconUrl: '../takenOfferIcon.png', // Path to your offer icon
     iconSize: [40, 40],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -41,6 +57,14 @@ var baseIcon = L.icon({
 
 var rescuerIcon = L.icon({
     iconUrl: '../rescuerIcon.png',
+    iconSize: [40, 40],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+var inactiveRescuerIcon = L.icon({
+    iconUrl: '../inactiveRescuerIcon.png',
     iconSize: [40, 40],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -109,7 +133,7 @@ function fetchPendingRequests() {
             filteredData1 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: requestIcon });
+                    return L.marker(latlng, { icon: pendingRequestIcon });
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
@@ -131,7 +155,7 @@ function fetchTakenRequests() {
             filteredData2 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: requestIcon });
+                    return L.marker(latlng, { icon: takenRequestIcon });
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
@@ -154,7 +178,7 @@ function fetchPendingOffers() {
             filteredData3 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: offerIcon });
+                    return L.marker(latlng, { icon: pendingOfferIcon });
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
@@ -176,7 +200,7 @@ function fetchTakenOffers() {
             filteredData4 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: offerIcon });
+                    return L.marker(latlng, { icon: takenOfferIcon });
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`Citizen: ${feature.properties.name} ${feature.properties.surname}<br>
@@ -223,7 +247,7 @@ function fetchInactiveRescuers() {
             filteredData6 = L.geoJSON(geoJsonData, {
                 pointToLayer: function (feature, latlng) {
                     // Create a marker with the custom icon
-                    return L.marker(latlng, { icon: rescuerIcon });
+                    return L.marker(latlng, { icon: inactiveRescuerIcon});
                 },
                 onEachFeature: function (feature, layer) {
                     layer.bindPopup(`Rescuer: ${feature.properties.name} ${feature.properties.surname}<br>
