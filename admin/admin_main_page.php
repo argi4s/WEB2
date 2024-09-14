@@ -9,11 +9,11 @@ check_login('admin');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Menu</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">       <!--Classless CSS-->
 </head>
 <body>
     <h1>Admin Menu</h1>
-    <form id="adminMenuForm">
+    <form id="adminMenuForm">                                                                   <!--List of other pages-->
         <a href="warehouse.php">Show Warehouse</a><br><br>
         <a href="map.php">Show Map</a><br><br>
         <a href="statistics.php">Show Statistics</a><br><br>
