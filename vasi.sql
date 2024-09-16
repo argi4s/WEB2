@@ -52,8 +52,9 @@ CREATE TABLE onvehicles (
     ON DELETE CASCADE ON UPDATE CASCADE
 )engine=InnoDB;
 
+
 CREATE TABLE requests (
-    requestId INT AUTO_INCREMENT PRIMARY KEY,
+    requestId INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(25) NOT NULL,
     productId INT UNSIGNED NOT NULL,
     quantity INT NOT NULL,
@@ -66,12 +67,13 @@ CREATE TABLE requests (
     FOREIGN KEY (productId) REFERENCES warehouse(productId) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+
 CREATE TABLE announcements (
-    announcementId INT AUTO_INCREMENT PRIMARY KEY,
-    requestId INT NOT NULL,
+    announcementId INT AUTO_INCREMENT PRIMARY KEY,  
+    announcements_requestId INT UNSIGNED NOT NULL,  
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (requestId) REFERENCES requests(requestId)
-)engine=InnoDB;
+    FOREIGN KEY (announcements_requestId) REFERENCES requests(requestId) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 CREATE TABLE offers (
     offerId INT AUTO_INCREMENT PRIMARY KEY,
@@ -91,13 +93,13 @@ CREATE TABLE rescuer_tasks (
     taskId INT AUTO_INCREMENT PRIMARY KEY,
     rescuerUsername VARCHAR(25) NOT NULL,
     taskType ENUM('request', 'offer') NOT NULL,
-    requestId INT,
+    requestId INT UNSIGNED NOT NULL,
     offerId INT,
-    FOREIGN KEY (rescuerUsername) REFERENCES rescuers(username),
+    FOREIGN KEY (rescuerUsername) REFERENCES users(username),
     FOREIGN KEY (requestId) REFERENCES requests(requestId) ON DELETE CASCADE,
-    FOREIGN KEY (offerId) REFERENCES offers(offerId) ON DELETE CASCADE,
-    CHECK ((requestId IS NOT NULL AND offerId IS NULL) OR (requestId IS NULL AND offerId IS NOT NULL))
-) engine=InnoDB;
+    FOREIGN KEY (offerId) REFERENCES offers(offerId) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 
 
 DELIMITER //
@@ -217,10 +219,51 @@ INSERT INTO citizens (username, name, surname, phone, latitude, longitude) VALUE
 -- Insert data into warehouse table
 INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Water', 'DRINK', 100),
+('Milk', 'DRINK', 150),
+('Juice', 'DRINK', 80),
+('Tea', 'DRINK', 90),
+('Coffee', 'DRINK', 60),
+('Soft Drink', 'DRINK', 200),
+('Energy Drink', 'DRINK', 75),
+('Mineral Water', 'DRINK', 120),
+('Coconut Water', 'DRINK', 50),
+('Lemonade', 'DRINK', 110);
+
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Bread', 'FOOD', 200),
+('Rice', 'FOOD', 300),
+('Pasta', 'FOOD', 180),
+('Canned Beans', 'FOOD', 250),
+('Cereal', 'FOOD', 150),
+('Flour', 'FOOD', 175),
+('Sugar', 'FOOD', 100),
+('Salt', 'FOOD', 110),
+('Cooking Oil', 'FOOD', 130),
+('Soup Mix', 'FOOD', 140);
+
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Hammer', 'TOOL', 50),
+('Screwdriver', 'TOOL', 60),
+('Wrench', 'TOOL', 40),
+('Drill', 'TOOL', 30),
+('Saw', 'TOOL', 25),
+('Pliers', 'TOOL', 35),
+('Tape Measure', 'TOOL', 45),
+('Ladder', 'TOOL', 15),
+('Shovel', 'TOOL', 20),
+('Flashlight', 'TOOL', 70);
+
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Bandages', 'OTHER', 75),
-('Milk', 'DRINK', 150);
+('First Aid Kit', 'OTHER', 60),
+('Toilet Paper', 'OTHER', 200),
+('Blankets', 'OTHER', 100),
+('Tents', 'OTHER', 30),
+('Sleeping Bags', 'OTHER', 40),
+('Batteries', 'OTHER', 150),
+('Candles', 'OTHER', 80),
+('Hand Sanitizer', 'OTHER', 120),
+('Soap', 'OTHER', 140);
 
 -- Insert data into onvehicles table
 INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
@@ -229,6 +272,8 @@ INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
 ('Hammer', 5, 'rescuer3'),
 ('Bandages', 7, 'rescuer4'),
 ('Milk', 15, 'rescuer5');
+
+
 
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
