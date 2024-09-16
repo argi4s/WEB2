@@ -232,7 +232,7 @@ INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
 
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
-('citizen1', 1, 2, 'taken'),
+('citizen1', 1, 2, 'pending'),
 ('citizen2', 2, 3, 'pending'),
 ('citizen3', 3, 5, 'pending'),
 ('citizen4', 4, 7, 'pending'),
@@ -245,6 +245,10 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 ('citizen8', 3, 12, 'pending'),
 ('citizen9', 4, 9, 'pending'),
 ('citizen10', 5, 11, 'pending');
+
+INSERT INTO announcements (requestId) VALUES
+(3),
+(5);
 
 -- Insert requests into rescuer_tasks table
 INSERT INTO rescuer_tasks (rescuerUsername, taskType, requestId) VALUES
