@@ -93,7 +93,7 @@ CREATE TABLE rescuer_tasks (
     taskType ENUM('request', 'offer') NOT NULL,
     requestId INT,
     offerId INT,
-    FOREIGN KEY (rescuerUsername) REFERENCES users(username),
+    FOREIGN KEY (rescuerUsername) REFERENCES rescuers(username),
     FOREIGN KEY (requestId) REFERENCES requests(requestId) ON DELETE CASCADE,
     FOREIGN KEY (offerId) REFERENCES offers(offerId) ON DELETE CASCADE,
     CHECK ((requestId IS NOT NULL AND offerId IS NULL) OR (requestId IS NULL AND offerId IS NOT NULL))
