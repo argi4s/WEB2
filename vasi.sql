@@ -52,13 +52,6 @@ CREATE TABLE onvehicles (
     ON DELETE CASCADE ON UPDATE CASCADE
 )engine=InnoDB;
 
-CREATE TABLE announcements (
-    announcementId INT AUTO_INCREMENT PRIMARY KEY,
-    requestId INT NOT NULL,
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (requestId) REFERENCES requests(requestId)
-)engine=InnoDB;
-
 CREATE TABLE requests (
     requestId INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(25) NOT NULL,
@@ -73,6 +66,12 @@ CREATE TABLE requests (
     FOREIGN KEY (productId) REFERENCES warehouse(productId) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE announcements (
+    announcementId INT AUTO_INCREMENT PRIMARY KEY,
+    requestId INT NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (requestId) REFERENCES requests(requestId)
+)engine=InnoDB;
 
 CREATE TABLE offers (
     offerId INT AUTO_INCREMENT PRIMARY KEY,
@@ -230,14 +229,6 @@ INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
 ('Hammer', 5, 'rescuer3'),
 ('Bandages', 7, 'rescuer4'),
 ('Milk', 15, 'rescuer5');
-
--- Insert data into announcements table
-INSERT INTO announcements (announcementTitle, announcementText) VALUES
-('Meeting', 'There will be a meeting at 5 PM'),
-('Supplies', 'New supplies have arrived'),
-('Training', 'Training session on Monday'),
-('Event', 'Community event this weekend'),
-('Maintenance', 'System maintenance on Friday');
 
 -- Insert data into requests table
 INSERT INTO requests (username, productId, quantity, status) VALUES
