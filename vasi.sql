@@ -229,7 +229,7 @@ INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Coconut Water', 'DRINK', 50),
 ('Lemonade', 'DRINK', 110);
 
-INSERT INTO warehouse (productName, productCategory, quantity) VALUES
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Bread', 'FOOD', 200),
 ('Rice', 'FOOD', 300),
 ('Pasta', 'FOOD', 180),
@@ -241,7 +241,7 @@ INSERT INTO warehouse (productName, productCategory, quantity) VALUES
 ('Cooking Oil', 'FOOD', 130),
 ('Soup Mix', 'FOOD', 140);
 
-INSERT INTO warehouse (productName, productCategory, quantity) VALUES
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Hammer', 'TOOL', 50),
 ('Screwdriver', 'TOOL', 60),
 ('Wrench', 'TOOL', 40),
@@ -253,7 +253,7 @@ INSERT INTO warehouse (productName, productCategory, quantity) VALUES
 ('Shovel', 'TOOL', 20),
 ('Flashlight', 'TOOL', 70);
 
-INSERT INTO warehouse (productName, productCategory, quantity) VALUES
+INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES
 ('Bandages', 'OTHER', 75),
 ('First Aid Kit', 'OTHER', 60),
 ('Toilet Paper', 'OTHER', 200),
