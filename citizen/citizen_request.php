@@ -25,21 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $citizenUsername = $loggedInUser;
     $requestProductName = !empty($_POST['Product']) ? $_POST['Product'] : null;
     $requestProductQuantity = isset($_POST['Quantity']) ? (int)$_POST['Quantity'] : 0;
-    $citizenProductCategory = !empty($_POST['ProductCategory']) ? $_POST['ProductCategory'] : null;
     $numberOfPeople = isset($_POST['NumberOfPeople']) ? (int)$_POST['NumberOfPeople'] : 0;
 
     // Check that at least one of Product Name or Product Category is provided
-    if (!$requestProductName && !$citizenProductCategory) {
-        die("You must provide either a product name or product category.");
+    if (!$requestProductName) {
+        die("You must provide a product name.");
     }
 
-    // Retrieve the productId from the warehouse table based on the productName or productCategory
+    // Retrieve the productId from the warehouse table based on the productName
     $productId = null;
-    if ($requestProductName || $citizenProductCategory) {
+    if ($requestProductName) {
         // Check if the product exists
-        $productCheckQuery = "SELECT productId FROM warehouse WHERE productName = ? OR productCategory = ?";
+        $productCheckQuery = "SELECT productId FROM warehouse WHERE productName = ?";
         $stmt = mysqli_prepare($conn, $productCheckQuery);
-        mysqli_stmt_bind_param($stmt, "ss", $requestProductName, $citizenProductCategory);
+        mysqli_stmt_bind_param($stmt, "s", $requestProductName);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $product = mysqli_fetch_assoc($result);
@@ -48,9 +47,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $productId = $product['productId'];
         } else {
             // Insert the new product into the warehouse table with a default quantity of 0
-            $insertProductQuery = "INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES (?, ?, 0)";
+            $insertProductQuery = "INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES (?, 'OTHER', 0)";
             $stmt = mysqli_prepare($conn, $insertProductQuery);
-            mysqli_stmt_bind_param($stmt, "ss", $requestProductName, $citizenProductCategory);
+            mysqli_stmt_bind_param($stmt, "s", $requestProductName);
             mysqli_stmt_execute($stmt);
 
             // Retrieve the new productId
@@ -64,11 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Insert data into requests table
-    $sql = "INSERT INTO requests (username, productId, quantity, citizenProductCategory, requestProductName, numberOfPeople)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO requests (username, productId, quantity, numberOfPeople)
+            VALUES (?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "siissi", $citizenUsername, $productId, $requestProductQuantity, $citizenProductCategory, $requestProductName, $numberOfPeople);
+    mysqli_stmt_bind_param($stmt, "siis", $citizenUsername, $productId, $requestProductQuantity, $numberOfPeople);
 
     // Execute the statement and check for errors
     if (!mysqli_stmt_execute($stmt)) {
@@ -169,8 +168,8 @@ $previousResult = mysqli_query($conn, $previousSql);
             const category = document.getElementById('productCategory').value.trim();
 
             // Ensure at least one field is filled
-            if (!product && !category) {
-                alert("You must provide either a product name or product category.");
+            if (!product) {
+                alert("You must provide a product name.");
                 return false;
             }
 
@@ -178,13 +177,6 @@ $previousResult = mysqli_query($conn, $previousSql);
             const validProducts = ["Water", "Bread", "Hammer", "Bandages", "Milk"];
             if (product && !validProducts.includes(product)) {
                 alert("Please select a valid product name from the list.");
-                return false;
-            }
-
-            // Ensure the product category matches one of the provided options
-            const validCategories = ["FOOD", "DRINK", "MEDS", "TOOL", "OTHER"];
-            if (category && !validCategories.includes(category)) {
-                alert("Please select a valid product category from the list.");
                 return false;
             }
 

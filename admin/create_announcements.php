@@ -174,3 +174,4 @@ check_login('admin');
     <a href="admin_main_page.php" class="button">Main Page</a>
 </body>
 </html>
+<html></html>
