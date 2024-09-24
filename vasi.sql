@@ -273,15 +273,13 @@ INSERT INTO onvehicles (productName, productQuantity, rescuerUsername) VALUES
 ('Bandages', 7, 'rescuer4'),
 ('Milk', 15, 'rescuer5');
 
-
-
 -- Insert data into requests table
-INSERT INTO requests (username, productId, quantity, status) VALUES
-('citizen1', 1, 2, 'pending'),
-('citizen2', 2, 3, 'pending'),
-('citizen3', 3, 5, 'pending'),
-('citizen4', 4, 7, 'pending'),
-('citizen5', 5, 6, 'pending');
+INSERT INTO requests (username, productId, quantity, numberOfPeople, status) VALUES
+('citizen1', 1, 2, 1, 'pending'),
+('citizen2', 2, 3, 3, 'pending'),
+('citizen3', 3, 5, 3, 'pending'),
+('citizen4', 4, 7, 5, 'pending'),
+('citizen5', 5, 6, 4, 'pending');
 
 -- Insert data into offers table
 INSERT INTO offers (username, productId, quantity, status) VALUES

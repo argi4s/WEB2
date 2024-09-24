@@ -19,7 +19,7 @@ $citizenRequestId = $_POST['citizenRequestId'];
 $citizenUsername = $_POST['citizenUsername'];
 $requestProductName = $_POST['requestProductName'];
 $offerQuantity = $_POST['offerQuantity'];
-$offerUsername = $_SESSION['username'];  // Assuming the logged-in user is making the offer
+$offerUsername = $_SESSION['username'];
 
 // Insert the offer into the offers table
 $sql = "INSERT INTO offers (username, productId, quantity, status) 
