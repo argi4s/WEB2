@@ -18,7 +18,7 @@ $sql = "SELECT o.*, c.name, c.surname, c.phone, c.latitude, c.longitude, w.produ
         JOIN citizens c ON o.username = c.username
         JOIN warehouse w ON o.productId = w.productId
         LEFT JOIN rescuer_tasks rt ON o.offerId = rt.offerId AND rt.taskType = 'offer'
-        WHERE o.status = 'taken'    --For taken offers
+        WHERE o.status = 'taken' 
         ORDER BY o.createdAt";
 
 $result = $conn->query($sql);

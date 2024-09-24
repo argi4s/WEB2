@@ -17,7 +17,7 @@ $sql = "SELECT o.*, c.name, c.surname, c.phone, c.latitude, c.longitude, w.produ
         FROM offers o
         JOIN citizens c ON o.username = c.username
         JOIN warehouse w ON o.productId = w.productId
-        WHERE o.status = 'pending'  --For pending offers
+        WHERE o.status = 'pending' 
         ORDER BY o.createdAt";
 
 $result = $conn->query($sql);
