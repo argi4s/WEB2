@@ -291,7 +291,7 @@ INSERT INTO offers (username, productId, quantity, status) VALUES
 ('citizen9', 4, 9, 'pending'),
 ('citizen10', 5, 11, 'pending');
 
-INSERT INTO announcements (requestId) VALUES
+INSERT INTO announcements (announcements_requestId) VALUES
 (3),
 (5);
 
@@ -306,5 +306,5 @@ ALTER TABLE requests ADD COLUMN isHidden TINYINT(1) DEFAULT 0;
 
 INSERT INTO offers (username, productId, quantity, status, numberOfPeople, acceptDate, completeDate) 
 VALUES 
-('citizen1', 3, 8, 'finished', 3, '2024-08-30 14:00:00', '2024-09-01 10:00:00'), -- Adjust the productId as needed
-('citizen1', 4, 12, 'finished', 5, '2024-08-28 09:00:00', '2024-08-29 17:00:00'); -- Adjust the productId as needed
+('citizen1', 3, 8, 'finished', 3, '2024-08-30 14:00:00', '2024-09-01 10:00:00'),
+('citizen1', 4, 12, 'finished', 5, '2024-08-28 09:00:00', '2024-08-29 17:00:00'); 
