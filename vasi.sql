@@ -85,8 +85,11 @@ CREATE TABLE offers (
     acceptDate DATETIME DEFAULT NULL,
     completeDate DATETIME DEFAULT NULL,
     numberOfPeople INT NOT NULL,
+     announcementId INT,
     FOREIGN KEY (username) REFERENCES citizens(username),
-    FOREIGN KEY (productId) REFERENCES warehouse(productId)
+    FOREIGN KEY (productId) REFERENCES warehouse(productId),
+    FOREIGN KEY (announcementId) REFERENCES announcements(announcementId)
+     ON DELETE CASCADE ON UPDATE CASCADE
 )engine=InnoDB;
 
 CREATE TABLE rescuer_tasks (

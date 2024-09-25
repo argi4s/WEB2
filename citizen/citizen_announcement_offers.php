@@ -22,94 +22,57 @@ if (!isset($_SESSION['username'])) {
 
 $loggedInUser = $_SESSION['username'];
 
-// Handle the form submission for offering
+// Handle the form submission for offerin
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['offerQuantity'])) {
         // Handle offering
         $announcementId = $_POST['announcementId'];
-        $productName = $_POST['productName'];
         $offerQuantity = $_POST['offerQuantity'];
 
-        // Check if the product exists in the warehouse
-        $stmtCheckProduct = $conn->prepare("SELECT productId FROM warehouse WHERE productName = ?");
-        $stmtCheckProduct->bind_param('s', $productName);
-        $stmtCheckProduct->execute();
-        $resultCheckProduct = $stmtCheckProduct->get_result();
+        // Fetch the productId associated with the announcement
+        $stmtFetchProduct = $conn->prepare("SELECT r.productId FROM announcements a
+                                             JOIN requests r ON a.announcements_requestId = r.requestId
+                                             WHERE a.announcementId = ?");
+        $stmtFetchProduct->bind_param('i', $announcementId);
+        $stmtFetchProduct->execute();
+        $resultFetchProduct = $stmtFetchProduct->get_result();
 
-        if ($resultCheckProduct->num_rows > 0) {
-            // Product exists, get the productId
-            $rowProduct = $resultCheckProduct->fetch_assoc();
-            $productId = $rowProduct['productId'];
-        } else {
-            // Product doesn't exist, insert it as a dummy product
-            $productCategory = 'OTHER'; // Default category
-            $stmtInsertDummyProduct = $conn->prepare("INSERT INTO warehouse (productName, productCategory, productQuantity) VALUES (?, ?, 0)");
-            $stmtInsertDummyProduct->bind_param('ss', $productName, $productCategory);
-            if ($stmtInsertDummyProduct->execute()) {
-                $productId = $conn->insert_id;
-            } else {
-                die("Error inserting dummy product: " . $conn->error);
-            }
-        }
+        if ($resultFetchProduct->num_rows > 0) {
+            $rowFetchProduct = $resultFetchProduct->fetch_assoc();
+            $productId = $rowFetchProduct['productId'];
 
-        // Insert the offer into the offers table
-        $stmtInsertOffer = $conn->prepare("INSERT INTO offers (username, productId, quantity, status, numberOfPeople) VALUES (?, ?, ?, 'pending', 1)");
-        $stmtInsertOffer->bind_param('sii', $loggedInUser, $productId, $offerQuantity);
-        if ($stmtInsertOffer->execute()) {
-            // Update the announcement's product quantity
-            $stmtUpdateAnnouncement = $conn->prepare("UPDATE announcements SET quantityRequested = quantityRequested - ? WHERE announcementId = ?");
-            $stmtUpdateAnnouncement->bind_param('ii', $offerQuantity, $announcementId);
-            if ($stmtUpdateAnnouncement->execute()) {
-                // Check if the announcement's quantity is now 0 and hide the announcement if it is
-                $stmtCheckQuantity = $conn->prepare("SELECT quantityRequested FROM announcements WHERE announcementId = ?");
-                $stmtCheckQuantity->bind_param('i', $announcementId);
-                $stmtCheckQuantity->execute();
-                $resultCheckQuantity = $stmtCheckQuantity->get_result();
-                if ($resultCheckQuantity->num_rows > 0) {
-                    $rowCheckQuantity = $resultCheckQuantity->fetch_assoc();
-                    if ($rowCheckQuantity['quantityRequested'] <= 0) {
-                        // Hide the announcement by setting a flag
-                        $stmtHideAnnouncement = $conn->prepare("UPDATE announcements SET status = 'fulfilled' WHERE announcementId = ?");
-                        $stmtHideAnnouncement->bind_param('i', $announcementId);
-                        $stmtHideAnnouncement->execute();
-                    }
-                }
-
+            // Insert the offer into the offers table
+            $stmtInsertOffer = $conn->prepare("INSERT INTO offers (username, productId, quantity, status) VALUES (?, ?, ?, 'pending')");
+            $stmtInsertOffer->bind_param('sii', $loggedInUser, $productId, $offerQuantity);
+            if ($stmtInsertOffer->execute()) {
+                // Update the announcement's quantity if necessary (handle your logic)
                 echo "Offer created successfully!";
             } else {
-                echo "Error updating announcement: " . $conn->error;
+                echo "Error: " . $stmtInsertOffer->error;
             }
         } else {
-            echo "Error: " . $conn->error;
+            echo "Announcement not found.";
         }
     } elseif (isset($_POST['cancelOfferId'])) {
         // Handle canceling
         $cancelOfferId = $_POST['cancelOfferId'];
 
         // Check if the offer is pending
-        $stmtCheckStatus = $conn->prepare("SELECT status, productId, quantity FROM offers WHERE offerId = ? AND username = ?");
+        $stmtCheckStatus = $conn->prepare("SELECT status FROM offers WHERE offerId = ? AND username = ?");
         $stmtCheckStatus->bind_param('is', $cancelOfferId, $loggedInUser);
         $stmtCheckStatus->execute();
         $resultCheckStatus = $stmtCheckStatus->get_result();
-        
+
         if ($resultCheckStatus->num_rows > 0) {
             $rowCheckStatus = $resultCheckStatus->fetch_assoc();
             if ($rowCheckStatus['status'] === 'pending') {
-                // Update the offer status to 'cancelled'
-                $stmtCancelOffer = $conn->prepare("UPDATE offers SET status = 'cancelled' WHERE offerId = ? AND username = ?");
+                // Delete the offer
+                $stmtCancelOffer = $conn->prepare("DELETE FROM offers WHERE offerId = ? AND username = ?");
                 $stmtCancelOffer->bind_param('is', $cancelOfferId, $loggedInUser);
                 if ($stmtCancelOffer->execute()) {
-                    $productId = $rowCheckStatus['productId'];
-                    $offerQuantity = $rowCheckStatus['quantity'];
-
-                    // Restore the original announcement quantity
-                    $stmtRestoreAnnouncement = $conn->prepare("UPDATE announcements SET quantityRequested = quantityRequested + ? WHERE announcementId = (SELECT announcementId FROM announcements WHERE productId = ? LIMIT 1)");
-                    $stmtRestoreAnnouncement->bind_param('ii', $offerQuantity, $productId);
-                    $stmtRestoreAnnouncement->execute();
-                    
                     echo "Offer canceled successfully!";
                 } else {
-                    echo "Error canceling offer: " . $conn->error;
+                    echo "Error canceling offer: " . $stmtCancelOffer->error;
                 }
             } else {
                 echo "Cannot cancel offer. Offer is not in 'pending' status.";
@@ -121,10 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 // Fetch announcements that are still active
-$stmtAnnouncements = $conn->prepare("SELECT a.announcementId, c.name, c.surname, w.productName AS productName, r.quantity AS quantityRequested
+$stmtAnnouncements = $conn->prepare("SELECT a.announcementId, w.productName AS productName, r.quantity AS quantityRequested
                                       FROM announcements a
                                       JOIN requests r ON a.announcements_requestId = r.requestId
-                                      JOIN citizens c ON r.username = c.username
                                       JOIN warehouse w ON r.productId = w.productId
                                       WHERE r.quantity > 0");
 $stmtAnnouncements->execute();
@@ -228,11 +190,9 @@ $resultPreviousOffers = $stmtPreviousOffers->get_result();
                 if ($resultAnnouncements->num_rows > 0) {
                     while ($row = $resultAnnouncements->fetch_assoc()) {
                         echo '<div class="announcement-item">';
-                        echo "<p><strong>" . htmlspecialchars($row["name"]) . " " . htmlspecialchars($row["surname"]) . "</strong> has requested <strong>" 
-                                            . htmlspecialchars($row["quantityRequested"]) . " " . htmlspecialchars($row["productName"]) . "</strong></p>";
-                        echo '<form method="POST" action="">';
+                        echo "<p>Requested <strong>" . htmlspecialchars($row["quantityRequested"]) . " units of " . htmlspecialchars($row["productName"]) . "</strong></p>";
+                        echo '<form method="POST" action="process_offer.php">';
                         echo '<input type="hidden" name="announcementId" value="' . htmlspecialchars($row["announcementId"]) . '">';
-                        echo '<input type="hidden" name="productName" value="' . htmlspecialchars($row["productName"]) . '">';
                         echo '<label for="quantity">Offer Quantity:</label>';
                         echo '<input type="number" name="offerQuantity" min="1" max="' . htmlspecialchars($row["quantityRequested"]) . '" required>';
                         echo '<button type="submit">Offer</button>';
@@ -247,64 +207,73 @@ $resultPreviousOffers = $stmtPreviousOffers->get_result();
         </div>
         
         <div class="right">
-            <h2>Your Offers</h2>
-            <?php
-            if ($resultOffers->num_rows > 0) {
-                while ($row = $resultOffers->fetch_assoc()) {
-                    echo "<div>";
-                    echo "<p>You offered <strong>" . htmlspecialchars($row["quantity"]) . " units of " . htmlspecialchars($row["productName"]) . "</strong> on " 
-                         . htmlspecialchars($row["createdAt"]) . " - Status: " . htmlspecialchars($row["status"]) . "</p>";
-                    if ($row["status"] === 'pending') {
-                        echo '<form method="POST" action="">';
-                        echo '<input type="hidden" name="cancelOfferId" value="' . htmlspecialchars($row["offerId"]) . '">';
-                        echo '<button type="submit">Cancel Offer</button>';
-                        echo '</form>';
-                    }
-                    echo "</div><hr>";
-                }
-            } else {
-                echo "<p>You have not made any offers yet.</p>";
-            }
-            ?>
-            
-            <h2>Previous Offers</h2>
-            <table>
-                <thead>
+            <h2>Your Pending Offers</h2>
+            <?php if ($resultOffers->num_rows > 0): ?>
+                <table>
                     <tr>
-                        <th>Product</th>
+                        <th>Offer ID</th>
+                        <th>Quantity</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    <?php while ($row = $resultOffers->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row["offerId"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["quantity"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["createdAt"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["status"]); ?></td>
+                            <td>
+                            <form method="POST" action="process_offer.php">
+    <input type="hidden" name="announcementId" value="<?php echo $row['announcementId']; ?>">
+    <input type="hidden" name="productId" value="<?php echo $row['productId']; ?>">
+    
+    <!-- Number of people and offer quantity should be provided in the form -->
+    <label for="offerQuantity">Quantity:</label>
+    <input type="number" name="offerQuantity" required>
+    
+    <label for="numberOfPeople">Number of People:</label>
+    <input type="number" name="numberOfPeople" required>
+    
+    <button type="submit">Make Offer</button>
+</form>
+
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </table>
+            <?php else: ?>
+                <p>No pending offers.</p>
+            <?php endif; ?>
+
+            <h2>Your Previous Offers</h2>
+            <?php if ($resultPreviousOffers->num_rows > 0): ?>
+                <table>
+                    <tr>
+                        <th>Offer ID</th>
                         <th>Quantity</th>
                         <th>Created At</th>
                         <th>Status</th>
                         <th>Accept Date</th>
                         <th>Complete Date</th>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if ($resultPreviousOffers->num_rows > 0) {
-                        while ($row = $resultPreviousOffers->fetch_assoc()) {
-                            echo '<tr>';
-                            echo '<td>' . htmlspecialchars($row["productName"]) . '</td>';
-                            echo '<td>' . htmlspecialchars($row["quantity"]) . '</td>';
-                            echo '<td>' . htmlspecialchars($row["createdAt"]) . '</td>';
-                            echo '<td>' . htmlspecialchars($row["status"]) . '</td>';
-                            echo '<td>' . htmlspecialchars($row["acceptDate"]) . '</td>';
-                            echo '<td>' . htmlspecialchars($row["completeDate"]) . '</td>';
-                            echo '</tr>';
-                        }
-                    } else {
-                        echo "<tr><td colspan='6'>No previous offers available.</td></tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                    <?php while ($row = $resultPreviousOffers->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row["offerId"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["quantity"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["createdAt"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["status"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["acceptDate"]); ?></td>
+                            <td><?php echo htmlspecialchars($row["completeDate"]); ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </table>
+            <?php else: ?>
+                <p>No previous offers.</p>
+            <?php endif; ?>
         </div>
     </div>
 
-    <a href="citizen_main_page.php" class="back-button">Back</a>
+    <a href="citizen_home.php" class="back-button">Back to Home</a>
 </body>
 </html>
-
-<?php
-$conn->close();
-?>
