@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Get the username from the session
             $rescuerUsername = $_SESSION['username'];
 
-            // Check the number of pending tasks
+            // Check the number of TAKEN tasks
             $pendingTasksStmt = $conn->prepare("
                 SELECT COUNT(*) as pendingTasksCount 
                 FROM rescuer_tasks rt
