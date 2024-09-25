@@ -274,6 +274,6 @@ $resultPreviousOffers = $stmtPreviousOffers->get_result();
         </div>
     </div>
 
-    <a href="citizen_home.php" class="back-button">Back to Home</a>
+    <a href="citizen_main_page.php" class="back-button">Back to Home</a>
 </body>
 </html>
