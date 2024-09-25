@@ -82,5 +82,7 @@ check_login('admin');
             .catch(error => console.error('Error fetching data:', error));
         }
     </script>
+    <br>
+    <a href="admin_main_page.php" class="button">Main Page</a>
 </body>
 </html>
