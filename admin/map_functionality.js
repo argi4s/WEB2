@@ -268,7 +268,7 @@ function applyFilter(filterId) {
         console.log(`Filter ${filterId} toggled to ${filterButton.classList.contains('active') ? 'active' : 'inactive'}`);
     }
 
-    var activeFilters = [];
+    var activeFilters = []; //fillters vector
     for (var i = 1; i <= 6; i++) {
         if (document.getElementById('filter' + i).classList.contains('active')) {
             activeFilters.push('filter' + i);
@@ -289,8 +289,8 @@ function applyFilter(filterId) {
     function drawLine(start, end) {
         const line = L.polyline([start, end], {
             color: '#ff0000', // Customize the line color
-            weight: 2, // Customize the line thickness
-            opacity: 0.4 // Set the opacity to 50%
+            weight: 2,        // Customize the line thickness
+            opacity: 0.4      // Set the opacity to 50%
         }).addTo(map);
     }   
 
@@ -339,14 +339,13 @@ function applyFilter(filterId) {
 }
 
 function initializeMap(){
-    fetchBaseCoords();
-    // Call the function to fetch self position when the map is initialized
+    fetchBaseCoords();      // Fetch base location
     fetchPendingRequests(); // Fetch pending requests initially
-    fetchTakenRequests();
-    fetchPendingOffers(); // Fetch pending offers initially
-    fetchTakenOffers();
-    fetchRescuers(); // Fetch other rescuers
-    fetchInactiveRescuers();
+    fetchTakenRequests();   // Fetch taken requests initially
+    fetchPendingOffers();   // Fetch pending offers initially
+    fetchTakenOffers();     // Fetch taken offers initially
+    fetchRescuers();        // Fetch active rescuers
+    fetchInactiveRescuers();// Fetch inactive rescuers
     dataLayer.addTo(map);
 }
 

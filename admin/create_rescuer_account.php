@@ -15,7 +15,7 @@ check_login('admin');
             const phone = document.getElementById('phone').value;
             const phoneRegex = /^\d{10}$/;
 
-            if (!phoneRegex.test(phone)) {
+            if (!phoneRegex.test(phone)) {                          // Check Phone
                 alert('Phone number must be a 10-digit number.');
                 return false;
             }
@@ -24,8 +24,8 @@ check_login('admin');
         }
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            document.getElementById('latitude').value = 38.0167; // Default latitude for Chalandri, Athens
-            document.getElementById('longitude').value = 23.8; // Default longitude for Chalandri, Athens
+            document.getElementById('latitude').value = 38.0167;    // Default latitude for Chalandri, Athens
+            document.getElementById('longitude').value = 23.8;      // Default longitude for Chalandri, Athens
         });
     </script>
 </head>

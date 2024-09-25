@@ -11,9 +11,8 @@ check_login('admin');
     <title>Create Announcements</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <style>
-        /* CSS to adjust the width of the Actions column */
         .actions-col {
-            width: 230px; /* Adjust the width as needed */
+            width: 230px; 
         }
     </style>
 </head>

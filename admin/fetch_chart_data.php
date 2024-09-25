@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 $startDate = $_POST['startDate'];
 $endDate = $_POST['endDate'];
 
-$response = [];
+$response = []; // For pending/completed requests/offers
 
 // Fetch new requests
 $sql = "SELECT COUNT(*) AS count FROM requests WHERE createdAt BETWEEN ? AND ?";                    // Dialegei requests sto xroniko plaisio pou orizei sto interface o xrhsths
