@@ -1,0 +1,2 @@
+This file contains the raw code for a WEB application created in the context of the group project of the modul WEB Development, in hope to be further developed in the future.
+The application is about connecting volunteers who want to help victims of physical disasters (fluds, wildfires etc) by supplying them directly a specific ammount of items or by storing it in a base. Every type of user can interact with a map and get real time updates on the help that they requsted or provide. 
